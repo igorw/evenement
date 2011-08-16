@@ -13,17 +13,26 @@ It is very strongly inspired by the EventEmitter API found in
 Creating an Emitter
 -------------------
 
-    require __DIR__.'/vendor/evenement/src/Evenement/EventEmitter.php';
-    $emitter = new Evenement\EventEmitter();
+```php
+<?php
+require __DIR__.'/vendor/evenement/src/Evenement/EventEmitter.php';
+$emitter = new Evenement\EventEmitter();
+```
 
 Adding Listeners
 ----------------
 
-    $emitter->on('user.create', function (User $user) use ($logger) {
-        $logger->log(sprintf("User '%s' was created.", $user->getLogin()));
-    });
+```php
+<?php
+$emitter->on('user.create', function (User $user) use ($logger) {
+    $logger->log(sprintf("User '%s' was created.", $user->getLogin()));
+});
+```
 
 Emitting Events
 ---------------
 
-    $emitter->emit('user.create', array($user));
+```php
+<?php
+$emitter->emit('user.create', array($user));
+```
