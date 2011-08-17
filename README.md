@@ -24,7 +24,7 @@ Adding Listeners
 
 ```php
 <?php
-$emitter->on('user.create', function (User $user) use ($logger) {
+$emitter->add('user.create', function (User $user) use ($logger) {
     $logger->log(sprintf("User '%s' was created.", $user->getLogin()));
 });
 ```
