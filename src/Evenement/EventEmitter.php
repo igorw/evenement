@@ -43,6 +43,19 @@ class EventEmitter
 		$this->listeners[$event][] = $listener;
 	}
 
+	public function once($event, $listener)
+	{
+		$that = $this;
+
+		$onceListener = function () use ($that, &$onceListener, $event, $listener) {
+			$that->removeListener($event, $onceListener);
+
+			call_user_func_array($listener, func_get_args());
+		};
+
+		$this->on($event, $onceListener);
+	}
+
 	public function removeListener($event, $listener)
 	{
 		if (isset($this->listeners[$event])) {

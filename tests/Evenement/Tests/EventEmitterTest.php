@@ -62,6 +62,25 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         $this->emitter->on('foo', 'not a callable');
     }
 
+    public function testOnce()
+    {
+        $listenerCalled = 0;
+
+        $this->emitter->once('foo', function () use (&$listenerCalled) {
+            $listenerCalled++;
+        });
+
+        $this->assertSame(0, $listenerCalled);
+
+        $this->emitter->emit('foo');
+
+        $this->assertSame(1, $listenerCalled);
+
+        $this->emitter->emit('foo');
+
+        $this->assertSame(1, $listenerCalled);
+    }
+
     public function testEmitWithoutArguments()
     {
         $listenerCalled = false;
