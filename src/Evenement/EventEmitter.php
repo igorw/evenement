@@ -29,7 +29,6 @@ namespace Evenement;
 class EventEmitter
 {
 	private $listeners = array();
-	private $modified = array();
 
 	public function on($event, $listener)
 	{
@@ -62,27 +61,13 @@ class EventEmitter
 
 	public function listeners($event)
 	{
-		if (!isset($this->listeners[$event])) {
-			return array();
-		}
-
-		$this->sortListenersEventIfModified($event);
-
-		return $this->listeners[$event];
+		return isset($this->listeners[$event]) ? $this->listeners[$event] : array();
 	}
 
 	public function emit($event, array $arguments = array())
 	{
 		foreach ($this->listeners($event) as $listener) {
 			call_user_func_array($listener, $arguments);
-		}
-	}
-
-	private function sortListenersEventIfModified($event)
-	{
-		if ($this->modified[$event]) {
-			krsort($this->listeners[$event]);
-			unset($this->modified[$event]);
 		}
 	}
 }
