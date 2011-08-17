@@ -26,46 +26,107 @@
 
 namespace Evenement;
 
+/**
+ * Handles listener attachment and event emitting
+ *
+ * @author Igor Wiedler
+ * @author Henrik Bjornskov <henrik@bjrnskov.dk>
+ */
 class EventEmitter
 {
-	private $listeners = array();
+    /**
+     * @var array
+     */
+    private $listeners = array();
 
-	public function on($event, $listener)
-	{
-		if (!is_callable($listener)) {
-			throw new \InvalidArgumentException('The provided listener was not a valid callable.');
-		}
+    /**
+     * Sets all listeners for an event. This will override all previous added listeners.
+     * To unset all listeners for a event use $emitter->set('event.name', array());
+     *
+     * @param string $event
+     * @param array $listeners
+     */
+    public function set($event, array $listeners = array())
+    {
+        unset($this->listeners[$event]);
 
-		if (!isset($this->listeners[$event])) {
-			$this->listeners[$event] = array();
-		}
+        foreach ($listeners as $listener) {
+            $this->add($event, $listener);
+        }
+    }
 
-		$this->listeners[$event][] = $listener;
-	}
+    /**
+     * Add a listener to an event. Optionally providing a priority
+     *
+     * @param string $event
+     * @param callable $listener
+     * @param integer $priority
+     */
+    public function add($event, $listener, $priority = 10)
+    {
+        if (!is_callable($listener)) {
+            throw new \InvalidArgumentException('The provided listener was not a valid callable.');
+        }
 
-	public function removeListener($event, $listener)
-	{
-		if (isset($this->listeners[$event])) {
-			if (false !== $index = array_search($listener, $this->listeners[$event], true)) {
-				unset($this->listeners[$event][$index]);
-			}
-		}
-	}
+        if (!isset($this->listeners[$event])) {
+            $this->listeners[$event] = array();
+        }
 
-	public function removeAllListeners($event)
-	{
-		unset($this->listeners[$event]);
-	}
+        if (!isset($this->listeners[$event][$priority])) {
+            $this->listeners[$event][$priority] = array();
+        }
 
-	public function listeners($event)
-	{
-		return isset($this->listeners[$event]) ? $this->listeners[$event] : array();
-	}
+        $this->listeners[$event][$priority][] = $listener;
+    }
 
-	public function emit($event, array $arguments = array())
-	{
-		foreach ($this->listeners($event) as $listener) {
-			call_user_func_array($listener, $arguments);
-		}
-	}
+    /**
+     * Recursively search for a listener and remove it from the list
+     *
+     * @param string $event
+     * @param callable $listener
+     */
+    public function remove($event, $listener)
+    {
+        if (!$this->listeners[$event]) {
+            throw \InvalidArgumentException('Event does not exists');
+        }
+
+        foreach ($this->listeners[$event] as $priority => $listeners) {
+            if (false !== ($index = array_search($listeners, $listener, true))) {
+                unset($this->listeners[$event][$priority][$index]);
+            }
+        }
+    }
+
+    /**
+     * Returns the listeners for a single event
+     *
+     * @param string $event
+     */
+    public function get($event)
+    {
+        if (!$this->listeners[$event]) {
+            throw \InvalidArgumentException('Event does not exists');
+        }
+
+        krsort($this->listeners[$event]);
+        $listeners = array();
+
+        foreach ($this->listeners[$event] as $all) {
+            $listeners = array_merge($listeners, $all);
+        }
+
+        return $listeners;
+    }
+
+    /**
+     * @param string $event
+     * @param array $arguments
+     */
+    public function emit($event, array $arguments = array())
+    {
+        foreach ($this->get($event) as $listener) {
+            call_user_func_array($listener, $arguments);
+        }
+    }
 }
