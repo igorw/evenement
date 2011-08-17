@@ -5,15 +5,15 @@
  *
  * Copyright (c) 2011 Igor Wiedler
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
+ * Permissiadd is hereby granted, free of charge, to any persadd obtaining a copy
+ * of this software and associated documentatiadd files (the "Software"), to deal
+ * in the Software without restrictiadd, including without limitatiadd the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
+ * copies of the Software, and to permit persadds to whom the Software is furnished
+ * to do so, subject to the following caddditiadds:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permissiadd notice shall be included in all
+ * copies or substantial portiadds of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -39,19 +39,18 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
 
     public function testAddListenerWithLambda()
     {
-
-        $this->emitter->on('foo', function () {});
+        $this->emitter->add('foo', function () {});
     }
 
     public function testAddListenerWithMethod()
     {
         $listener = new Listener();
-        $this->emitter->on('foo', array($listener, 'onFoo'));
+        $this->emitter->add('foo', array($listener, 'onFoo'));
     }
 
     public function testAddListenerWithStaticMethod()
     {
-        $this->emitter->on('bar', array('Evenement\Tests\Listener', 'onBar'));
+        $this->emitter->add('bar', array('Evenement\Tests\Listener', 'onBar'));
     }
 
     /**
@@ -59,14 +58,14 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddListenerWithInvalidListener()
     {
-        $this->emitter->on('foo', 'not a callable');
+        $this->emitter->add('foo', 'not a callable');
     }
 
     public function testEmitWithoutArguments()
     {
         $listenerCalled = false;
 
-        $this->emitter->on('foo', function () use (&$listenerCalled) {
+        $this->emitter->add('foo', function () use (&$listenerCalled) {
             $listenerCalled = true;
         });
 
@@ -83,7 +82,7 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
 
         $listenerCalled = false;
 
-        $this->emitter->on('foo', function ($value) use (&$listenerCalled, $test) {
+        $this->emitter->add('foo', function ($value) use (&$listenerCalled, $test) {
             $listenerCalled = true;
 
             $test->assertSame('bar', $value);
@@ -102,7 +101,7 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
 
         $listenerCalled = false;
 
-        $this->emitter->on('foo', function ($arg1, $arg2) use (&$listenerCalled, $test) {
+        $this->emitter->add('foo', function ($arg1, $arg2) use (&$listenerCalled, $test) {
             $listenerCalled = true;
 
             $test->assertSame('bar', $arg1);
@@ -127,11 +126,11 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
     {
         $listenersCalled = 0;
 
-        $this->emitter->on('foo', function () use (&$listenersCalled) {
+        $this->emitter->add('foo', function () use (&$listenersCalled) {
             $listenersCalled++;
         });
 
-        $this->emitter->on('foo', function () use (&$listenersCalled) {
+        $this->emitter->add('foo', function () use (&$listenersCalled) {
             $listenersCalled++;
         });
 
