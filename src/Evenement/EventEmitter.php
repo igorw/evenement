@@ -105,8 +105,8 @@ class EventEmitter
      */
     public function get($event)
     {
-        if (!$this->listeners[$event]) {
-            throw \InvalidArgumentException('Event does not exists');
+        if (!isset($this->listeners[$event])) {
+            throw new \InvalidArgumentException('Event does not exists');
         }
 
         krsort($this->listeners[$event]);
@@ -125,8 +125,12 @@ class EventEmitter
      */
     public function emit($event, array $arguments = array())
     {
-        foreach ($this->get($event) as $listener) {
-            call_user_func_array($listener, $arguments);
+        try {
+            foreach ($this->get($event) as $listener) {
+                call_user_func_array($listener, $arguments);
+            }
+        } catch (\InvalidArgumentException $e) {
+            return;
         }
     }
 }
