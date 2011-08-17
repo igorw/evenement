@@ -41,8 +41,6 @@ class EventEmitter
 		}
 
 		$this->listeners[$event][] = $listener;
-
-		$this->modified[$event] = true;
 	}
 
 	public function removeListener($event, $listener)
