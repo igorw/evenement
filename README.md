@@ -8,7 +8,9 @@ It has the same design goals as [Silex](http://silex-project.org) and
 and simple.
 
 It is very strongly inspired by the EventEmitter API found in
-[node.js](http://nodejs.org).
+[node.js](http://nodejs.org). It includes an implementation of
+[EventEmitter2](https://github.com/hij1nx/EventEmitter2), that extends
+the original EventEmitter.
 
 Creating an Emitter
 -------------------
