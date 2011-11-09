@@ -90,9 +90,7 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->assertSame(false, $listenerCalled);
-
         $this->emitter->emit('foo');
-
         $this->assertSame(true, $listenerCalled);
     }
 
@@ -109,9 +107,7 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->assertSame(false, $listenerCalled);
-
         $this->emitter->emit('foo', array('bar'));
-
         $this->assertSame(true, $listenerCalled);
     }
 
@@ -129,9 +125,7 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->assertSame(false, $listenerCalled);
-
         $this->emitter->emit('foo', array('bar', 'baz'));
-
         $this->assertSame(true, $listenerCalled);
     }
 
@@ -155,9 +149,57 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->assertSame(0, $listenersCalled);
-
         $this->emitter->emit('foo');
-
         $this->assertSame(2, $listenersCalled);
+    }
+
+    public function testRemoveAllListenersMatching()
+    {
+        $listenersCalled = 0;
+
+        $this->emitter->on('foo', function () use (&$listenersCalled) {
+            $listenersCalled++;
+        });
+
+        $this->emitter->removeAllListeners('foo');
+
+        $this->assertSame(0, $listenersCalled);
+        $this->emitter->emit('foo');
+        $this->assertSame(0, $listenersCalled);
+    }
+
+    public function testRemoveAllListenersNotMatching()
+    {
+        $listenersCalled = 0;
+
+        $this->emitter->on('foo', function () use (&$listenersCalled) {
+            $listenersCalled++;
+        });
+
+        $this->emitter->removeAllListeners('bar');
+
+        $this->assertSame(0, $listenersCalled);
+        $this->emitter->emit('foo');
+        $this->assertSame(1, $listenersCalled);
+    }
+
+    public function testRemoveAllListenersWithoutArguments()
+    {
+        $listenersCalled = 0;
+
+        $this->emitter->on('foo', function () use (&$listenersCalled) {
+            $listenersCalled++;
+        });
+
+        $this->emitter->on('bar', function () use (&$listenersCalled) {
+            $listenersCalled++;
+        });
+
+        $this->emitter->removeAllListeners();
+
+        $this->assertSame(0, $listenersCalled);
+        $this->emitter->emit('foo');
+        $this->emitter->emit('bar');
+        $this->assertSame(0, $listenersCalled);
     }
 }

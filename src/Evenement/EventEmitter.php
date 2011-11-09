@@ -28,57 +28,61 @@ namespace Evenement;
 
 class EventEmitter
 {
-	private $listeners = array();
+    protected $listeners = array();
 
-	public function on($event, $listener)
-	{
-		if (!is_callable($listener)) {
-			throw new \InvalidArgumentException('The provided listener was not a valid callable.');
-		}
+    public function on($event, $listener)
+    {
+        if (!is_callable($listener)) {
+            throw new \InvalidArgumentException('The provided listener was not a valid callable.');
+        }
 
-		if (!isset($this->listeners[$event])) {
-			$this->listeners[$event] = array();
-		}
+        if (!isset($this->listeners[$event])) {
+            $this->listeners[$event] = array();
+        }
 
-		$this->listeners[$event][] = $listener;
-	}
+        $this->listeners[$event][] = $listener;
+    }
 
-	public function once($event, $listener)
-	{
-		$that = $this;
+    public function once($event, $listener)
+    {
+        $that = $this;
 
-		$onceListener = function () use ($that, &$onceListener, $event, $listener) {
-			$that->removeListener($event, $onceListener);
+        $onceListener = function () use ($that, &$onceListener, $event, $listener) {
+            $that->removeListener($event, $onceListener);
 
-			call_user_func_array($listener, func_get_args());
-		};
+            call_user_func_array($listener, func_get_args());
+        };
 
-		$this->on($event, $onceListener);
-	}
+        $this->on($event, $onceListener);
+    }
 
-	public function removeListener($event, $listener)
-	{
-		if (isset($this->listeners[$event])) {
-			if (false !== $index = array_search($listener, $this->listeners[$event], true)) {
-				unset($this->listeners[$event][$index]);
-			}
-		}
-	}
+    public function removeListener($event, $listener)
+    {
+        if (isset($this->listeners[$event])) {
+            if (false !== $index = array_search($listener, $this->listeners[$event], true)) {
+                unset($this->listeners[$event][$index]);
+            }
+        }
+    }
 
-	public function removeAllListeners($event)
-	{
-		unset($this->listeners[$event]);
-	}
+    public function removeAllListeners($event = null)
+    {
+        if ($event !== null) {
+            unset($this->listeners[$event]);
+        } else {
+            $this->listeners = array();
+        }
+    }
 
-	public function listeners($event)
-	{
-		return isset($this->listeners[$event]) ? $this->listeners[$event] : array();
-	}
+    public function listeners($event)
+    {
+        return isset($this->listeners[$event]) ? $this->listeners[$event] : array();
+    }
 
-	public function emit($event, array $arguments = array())
-	{
-		foreach ($this->listeners($event) as $listener) {
-			call_user_func_array($listener, $arguments);
-		}
-	}
+    public function emit($event, array $arguments = array())
+    {
+        foreach ($this->listeners($event) as $listener) {
+            call_user_func_array($listener, $arguments);
+        }
+    }
 }
