@@ -39,7 +39,6 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
 
     public function testAddListenerWithLambda()
     {
-
         $this->emitter->on('foo', function () {});
     }
 
@@ -151,6 +150,38 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
         $this->assertSame(2, $listenersCalled);
+    }
+
+    public function testRemoveListenerMatching()
+    {
+        $listenersCalled = 0;
+
+        $listener = function () use (&$listenersCalled) {
+            $listenersCalled++;
+        };
+
+        $this->emitter->on('foo', $listener);
+        $this->emitter->removeListener('foo', $listener);
+
+        $this->assertSame(0, $listenersCalled);
+        $this->emitter->emit('foo');
+        $this->assertSame(0, $listenersCalled);
+    }
+
+    public function testRemoveListenerNotMatching()
+    {
+        $listenersCalled = 0;
+
+        $listener = function () use (&$listenersCalled) {
+            $listenersCalled++;
+        };
+
+        $this->emitter->on('foo', $listener);
+        $this->emitter->removeListener('bar', $listener);
+
+        $this->assertSame(0, $listenersCalled);
+        $this->emitter->emit('foo');
+        $this->assertSame(1, $listenersCalled);
     }
 
     public function testRemoveAllListenersMatching()
