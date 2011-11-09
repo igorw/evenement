@@ -37,6 +37,46 @@ class EventEmitter2Test extends \PHPUnit_Framework_TestCase
         $this->emitter = new EventEmitter2();
     }
 
+    // matching tests from
+    // test/wildcardEvents/addListener.js
+
+    public function testMatching7()
+    {
+        $listenerCalled = 0;
+
+        $listener = function () use (&$listenerCalled) {
+            $listenerCalled++;
+        };
+
+        $this->emitter->on('*.test', $listener);
+        $this->emitter->on('*.*', $listener);
+        $this->emitter->on('*', $listener);
+
+        $this->emitter->emit('other.emit');
+        $this->emitter->emit('foo.test');
+
+        $this->assertSame(3, $listenerCalled);
+    }
+
+    public function testMatching8()
+    {
+        $listenerCalled = 0;
+
+        $listener = function () use (&$listenerCalled) {
+            $listenerCalled++;
+        };
+
+        $this->emitter->on('foo.test', $listener);
+        $this->emitter->on('*.*', $listener);
+        $this->emitter->on('*', $listener);
+
+        $this->emitter->emit('*.*');
+        $this->emitter->emit('foo.test');
+        $this->emitter->emit('*');
+
+        $this->assertSame(5, $listenerCalled);
+    }
+
     public function testOnAny()
     {
         $this->emitter->onAny(function () {});

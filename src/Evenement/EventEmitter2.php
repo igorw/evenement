@@ -83,4 +83,47 @@ class EventEmitter2 extends EventEmitter
 
         parent::emit($event, $arguments);
     }
+
+    public function listeners($event)
+    {
+        $matchedListeners = array();
+
+        foreach ($this->listeners as $name => $listeners) {
+            foreach ($listeners as $listener) {
+                if ($this->matchEventName($event, $name)) {
+                    $matchedListeners[] = $listener;
+                }
+            }
+        }
+
+        return $matchedListeners;
+    }
+
+    protected function matchEventName($matchPattern, $eventName)
+    {
+        $patternParts = explode($this->options['delimiter'], $matchPattern);
+        $nameParts = explode($this->options['delimiter'], $eventName);
+
+        if (count($patternParts) != count($nameParts)) {
+            return false;
+        }
+
+        $size = min(count($patternParts), count($nameParts));
+        for ($i = 0; $i < $size; $i++) {
+            $patternPart = $patternParts[$i];
+            $namePart = $nameParts[$i];
+
+            if ('*' === $patternPart || '*' === $namePart) {
+                continue;
+            }
+
+            if ($namePart === $patternPart) {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
 }
