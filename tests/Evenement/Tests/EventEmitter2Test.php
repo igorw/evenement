@@ -40,7 +40,7 @@ class EventEmitter2Test extends \PHPUnit_Framework_TestCase
     // matching tests from
     // test/wildcardEvents/addListener.js
 
-    public function testMatching7()
+    public function testWildcardMatching7()
     {
         $listenerCalled = 0;
 
@@ -58,7 +58,7 @@ class EventEmitter2Test extends \PHPUnit_Framework_TestCase
         $this->assertSame(3, $listenerCalled);
     }
 
-    public function testMatching8()
+    public function testWildcardMatching8()
     {
         $listenerCalled = 0;
 
