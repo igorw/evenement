@@ -4,7 +4,7 @@
     "description": "Événement is a very simple event dispatching library for PHP 5.3",
     "keywords": ["event-dispatcher"],
     "homepage": "https://github.com/igorw/evenement",
-    "version": "0.1.3",
+    "version": "0.2.0",
     "license": "MIT",
     "authors": [
         {
