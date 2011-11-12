@@ -12,6 +12,8 @@ It is very strongly inspired by the EventEmitter API found in
 [EventEmitter2](https://github.com/hij1nx/EventEmitter2), that extends
 the original EventEmitter.
 
+[![Build Status](https://secure.travis-ci.org/igorw/evenement.png)](http://travis-ci.org/igorw/evenement)
+
 Creating an Emitter
 -------------------
 
