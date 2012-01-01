@@ -148,4 +148,13 @@ class EventEmitter2Test extends \PHPUnit_Framework_TestCase
             array(400),
         );
     }
+
+    /**
+     * @expectedException OutOfRangeException
+     */
+    public function testManyWithLessThanZeroTtl()
+    {
+        $this->emitter->many('foo', -1, function () {});
+        $this->emitter->emit('foo');
+    }
 }
