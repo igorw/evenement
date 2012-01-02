@@ -45,7 +45,6 @@ require 'vendor/.composer/autoload.php';
 
 ```php
 <?php
-require __DIR__.'/vendor/evenement/src/Evenement/EventEmitter.php';
 $emitter = new Evenement\EventEmitter();
 ```
 
