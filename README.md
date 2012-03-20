@@ -22,14 +22,14 @@ Just create a composer.json file for your project:
 ```JSON
 {
     "require": {
-        "evenement/evenement": "*"
+        "evenement/evenement": "dev-master"
     }
 }
 ```
 
 And run these two commands to install it:
 
-    $ wget http://getcomposer.org/composer.phar
+    $ curl -s http://getcomposer.org/installer | php
     $ php composer.phar install
 
 Now you can add the autoloader, and you will have access to the library:
@@ -66,13 +66,6 @@ $emitter->emit('user.create', array($user));
 
 Tests
 -----
-
-Before running the tests you need to have composer set up an autoloader:
-
-    $ wget http://getcomposer.org/composer.phar
-    $ php composer.phar install
-
-Now you can run the unit tests.
 
     $ phpunit
 
