@@ -15,7 +15,7 @@ the original EventEmitter.
 
 ## Fetch
 
-The recommended way to install Événement is [through composer](http://packagist.org).
+The recommended way to install Événement is [through composer](http://getcomposer.org).
 
 Just create a composer.json file for your project:
 
