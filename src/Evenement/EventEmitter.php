@@ -59,7 +59,7 @@ class EventEmitter
     public function removeListener($event, $listener)
     {
         if (isset($this->_listeners[$event])) {
-            if (false !== $index = array_search($listener, $this->listeners_[$event], true)) {
+            if (false !== $index = array_search($listener, $this->_listeners[$event], true)) {
                 unset($this->_listeners[$event][$index]);
             }
         }
