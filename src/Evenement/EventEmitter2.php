@@ -88,7 +88,7 @@ class EventEmitter2 extends EventEmitter
     {
         $matchedListeners = array();
 
-        foreach ($this->listeners as $name => $listeners) {
+        foreach ($this->_listeners as $name => $listeners) {
             foreach ($listeners as $listener) {
                 if ($this->matchEventName($event, $name)) {
                     $matchedListeners[] = $listener;

@@ -28,7 +28,7 @@ namespace Evenement;
 
 class EventEmitter
 {
-    protected $listeners = array();
+    protected $_listeners = array();
 
     public function on($event, $listener)
     {
@@ -36,11 +36,11 @@ class EventEmitter
             throw new \InvalidArgumentException('The provided listener was not a valid callable.');
         }
 
-        if (!isset($this->listeners[$event])) {
-            $this->listeners[$event] = array();
+        if (!isset($this->_listeners[$event])) {
+            $this->_listeners[$event] = array();
         }
 
-        $this->listeners[$event][] = $listener;
+        $this->_listeners[$event][] = $listener;
     }
 
     public function once($event, $listener)
@@ -58,9 +58,9 @@ class EventEmitter
 
     public function removeListener($event, $listener)
     {
-        if (isset($this->listeners[$event])) {
-            if (false !== $index = array_search($listener, $this->listeners[$event], true)) {
-                unset($this->listeners[$event][$index]);
+        if (isset($this->_listeners[$event])) {
+            if (false !== $index = array_search($listener, $this->_listeners[$event], true)) {
+                unset($this->_listeners[$event][$index]);
             }
         }
     }
@@ -68,15 +68,15 @@ class EventEmitter
     public function removeAllListeners($event = null)
     {
         if ($event !== null) {
-            unset($this->listeners[$event]);
+            unset($this->_listeners[$event]);
         } else {
-            $this->listeners = array();
+            $this->_listeners = array();
         }
     }
 
     public function listeners($event)
     {
-        return isset($this->listeners[$event]) ? $this->listeners[$event] : array();
+        return isset($this->_listeners[$event]) ? $this->_listeners[$event] : array();
     }
 
     public function emit($event, array $arguments = array())
