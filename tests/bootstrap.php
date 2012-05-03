@@ -24,6 +24,6 @@
  * THE SOFTWARE.
  */
 
-$loader = require __DIR__.'/../vendor/.composer/autoload.php';
+$loader = require __DIR__.'/../vendor/autoload.php';
 $loader->add('Evenement\Tests', __DIR__);
 $loader->register();

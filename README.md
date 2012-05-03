@@ -36,7 +36,7 @@ Now you can add the autoloader, and you will have access to the library:
 
 ```php
 <?php
-require 'vendor/.composer/autoload.php';
+require 'vendor/autoload.php';
 ```
 
 ## Usage
