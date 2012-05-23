@@ -32,7 +32,7 @@ class Listener
     {
     }
 
-    static public function onBar()
+    public static function onBar()
     {
     }
 }
