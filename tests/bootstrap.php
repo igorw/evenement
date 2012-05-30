@@ -26,4 +26,3 @@
 
 $loader = require __DIR__.'/../vendor/autoload.php';
 $loader->add('Evenement\Tests', __DIR__);
-$loader->register();
