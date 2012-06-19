@@ -26,15 +26,13 @@
 
 namespace Evenement\Tests;
 
-use Evenement\EventEmitter;
-
 class EventEmitterTest extends \PHPUnit_Framework_TestCase
 {
     private $emitter;
 
     public function setUp()
     {
-        $this->emitter = new EventEmitter();
+        $this->emitter = new EventEmitterImpl();
     }
 
     public function testAddListenerWithLambda()
@@ -45,20 +43,21 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
     public function testAddListenerWithMethod()
     {
         $listener = new Listener();
-        $this->emitter->on('foo', array($listener, 'onFoo'));
+        $this->emitter->on('foo', [$listener, 'onFoo']);
     }
 
     public function testAddListenerWithStaticMethod()
     {
-        $this->emitter->on('bar', array('Evenement\Tests\Listener', 'onBar'));
+        $this->emitter->on('bar', ['Evenement\Tests\Listener', 'onBar']);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testAddListenerWithInvalidListener()
     {
-        $this->emitter->on('foo', 'not a callable');
+        try {
+            $this->emitter->on('foo', 'not a callable');
+            $this->fail();
+        } catch (\Exception $e) {
+        }
     }
 
     public function testOnce()
@@ -106,7 +105,7 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->assertSame(false, $listenerCalled);
-        $this->emitter->emit('foo', array('bar'));
+        $this->emitter->emit('foo', ['bar']);
         $this->assertSame(true, $listenerCalled);
     }
 
@@ -124,15 +123,15 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->assertSame(false, $listenerCalled);
-        $this->emitter->emit('foo', array('bar', 'baz'));
+        $this->emitter->emit('foo', ['bar', 'baz']);
         $this->assertSame(true, $listenerCalled);
     }
 
     public function testEmitWithNoListeners()
     {
         $this->emitter->emit('foo');
-        $this->emitter->emit('foo', array('bar'));
-        $this->emitter->emit('foo', array('bar', 'baz'));
+        $this->emitter->emit('foo', ['bar']);
+        $this->emitter->emit('foo', ['bar', 'baz']);
     }
 
     public function testEmitWithTwoListeners()

@@ -34,7 +34,7 @@ class EventEmitter2Test extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->emitter = new EventEmitter2();
+        $this->emitter = new EventEmitter2Impl();
     }
 
     // matching tests from

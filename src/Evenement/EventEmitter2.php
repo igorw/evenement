@@ -11,34 +11,36 @@
 
 namespace Evenement;
 
-class EventEmitter2 extends EventEmitter
+trait EventEmitter2
 {
-    protected $options;
-    protected $anyListeners = array();
-
-    public function __construct(array $options = array())
-    {
-        $this->options = array_merge(array(
-            'delimiter' => '.',
-        ), $options);
+    use EventEmitter {
+        EventEmitter::emit as parentEmit;
     }
 
-    public function onAny($listener)
+    protected $options;
+    protected $anyListeners = [];
+
+    public function __construct(array $options = [])
+    {
+        $this->options = array_merge([
+            'delimiter' => '.',
+        ], $options);
+    }
+
+    public function onAny(callable $listener)
     {
         $this->anyListeners[] = $listener;
     }
 
-    public function offAny($listener)
+    public function offAny(callable $listener)
     {
         if (false !== $index = array_search($listener, $this->anyListeners, true)) {
             unset($this->anyListeners[$index]);
         }
     }
 
-    public function many($event, $timesToListen, $listener)
+    public function many($event, $timesToListen, callable $listener)
     {
-        $that = $this;
-
         $timesListened = 0;
 
         if ($timesToListen == 0) {
@@ -49,9 +51,9 @@ class EventEmitter2 extends EventEmitter
             throw new \OutOfRangeException('You cannot listen less than zero times.');
         }
 
-        $manyListener = function () use ($that, &$timesListened, &$manyListener, $event, $timesToListen, $listener) {
+        $manyListener = function () use (&$timesListened, &$manyListener, $event, $timesToListen, $listener) {
             if (++$timesListened == $timesToListen) {
-                $that->removeListener($event, $manyListener);
+                $this->removeListener($event, $manyListener);
             }
 
             call_user_func_array($listener, func_get_args());
@@ -60,18 +62,18 @@ class EventEmitter2 extends EventEmitter
         $this->on($event, $manyListener);
     }
 
-    public function emit($event, array $arguments = array())
+    public function emit($event, array $arguments = [])
     {
         foreach ($this->anyListeners as $listener) {
             call_user_func_array($listener, $arguments);
         }
 
-        parent::emit($event, $arguments);
+        $this->parentEmit($event, $arguments);
     }
 
     public function listeners($event)
     {
-        $matchedListeners = array();
+        $matchedListeners = [];
 
         foreach ($this->listeners as $name => $listeners) {
             foreach ($listeners as $listener) {

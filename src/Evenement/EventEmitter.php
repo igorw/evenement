@@ -11,29 +11,23 @@
 
 namespace Evenement;
 
-class EventEmitter implements EventEmitterInterface
+trait EventEmitter
 {
-    protected $listeners = array();
+    protected $listeners = [];
 
-    public function on($event, $listener)
+    public function on($event, callable $listener)
     {
-        if (!is_callable($listener)) {
-            throw new \InvalidArgumentException('The provided listener was not a valid callable.');
-        }
-
         if (!isset($this->listeners[$event])) {
-            $this->listeners[$event] = array();
+            $this->listeners[$event] = [];
         }
 
         $this->listeners[$event][] = $listener;
     }
 
-    public function once($event, $listener)
+    public function once($event, callable $listener)
     {
-        $that = $this;
-
-        $onceListener = function () use ($that, &$onceListener, $event, $listener) {
-            $that->removeListener($event, $onceListener);
+        $onceListener = function () use (&$onceListener, $event, $listener) {
+            $this->removeListener($event, $onceListener);
 
             call_user_func_array($listener, func_get_args());
         };
@@ -41,7 +35,7 @@ class EventEmitter implements EventEmitterInterface
         $this->on($event, $onceListener);
     }
 
-    public function removeListener($event, $listener)
+    public function removeListener($event, callable $listener)
     {
         if (isset($this->listeners[$event])) {
             if (false !== $index = array_search($listener, $this->listeners[$event], true)) {
@@ -55,16 +49,16 @@ class EventEmitter implements EventEmitterInterface
         if ($event !== null) {
             unset($this->listeners[$event]);
         } else {
-            $this->listeners = array();
+            $this->listeners = [];
         }
     }
 
     public function listeners($event)
     {
-        return isset($this->listeners[$event]) ? $this->listeners[$event] : array();
+        return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
     }
 
-    public function emit($event, array $arguments = array())
+    public function emit($event, array $arguments = [])
     {
         foreach ($this->listeners($event) as $listener) {
             call_user_func_array($listener, $arguments);
