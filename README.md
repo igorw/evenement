@@ -1,6 +1,6 @@
 # Événement
 
-Événement is a very simple event dispatching library for PHP 5.3.
+Événement is a very simple event dispatching library for PHP 5.4.
 
 It has the same design goals as [Silex](http://silex-project.org) and
 [Pimple](http://pimple-project.org), to empower the user while staying concise
