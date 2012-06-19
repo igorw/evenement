@@ -11,13 +11,15 @@
 
 namespace Evenement\Tests;
 
+use Evenement\EventEmitter;
+
 class EventEmitterTest extends \PHPUnit_Framework_TestCase
 {
     private $emitter;
 
     public function setUp()
     {
-        $this->emitter = new EventEmitterImpl();
+        $this->emitter = new EventEmitter();
     }
 
     public function testAddListenerWithLambda()
