@@ -1,6 +1,6 @@
 {
     "name": "evenement/evenement",
-    "description": "Événement is a very simple event dispatching library for PHP 5.3",
+    "description": "Événement is a very simple event dispatching library for PHP",
     "keywords": ["event-dispatcher"],
     "license": "MIT",
     "authors": [
