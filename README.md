@@ -1,6 +1,6 @@
 # Événement
 
-Événement is a very simple event dispatching library for PHP 5.4.
+Événement is a very simple event dispatching library for PHP.
 
 It has the same design goals as [Silex](http://silex-project.org) and
 [Pimple](http://pimple-project.org), to empower the user while staying concise
@@ -21,6 +21,17 @@ Just create a composer.json file for your project:
 {
     "require": {
         "evenement/evenement": "dev-master"
+    }
+}
+```
+
+**Note:** The `dev-master` version of Événement requires PHP 5.4. If you are
+using PHP 5.3, please use the `1.0.*` version:
+
+```JSON
+{
+    "require": {
+        "evenement/evenement": "1.0.*"
     }
 }
 ```
