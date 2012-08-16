@@ -61,7 +61,7 @@ $emitter = new Evenement\EventEmitter();
 
 ```php
 <?php
-$emitter->on('user.create', function (User $user) use ($logger) {
+$emitter->on('user.created', function (User $user) use ($logger) {
     $logger->log(sprintf("User '%s' was created.", $user->getLogin()));
 });
 ```
@@ -70,7 +70,7 @@ $emitter->on('user.create', function (User $user) use ($logger) {
 
 ```php
 <?php
-$emitter->emit('user.create', array($user));
+$emitter->emit('user.created', array($user));
 ```
 
 Tests
