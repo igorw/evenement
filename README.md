@@ -9,7 +9,7 @@ and simple.
 It is very strongly inspired by the EventEmitter API found in
 [node.js](http://nodejs.org).
 
-[![Build Status](https://secure.travis-ci.org/igorw/evenement.png)](http://travis-ci.org/igorw/evenement)
+[![Build Status](https://secure.travis-ci.org/igorw/evenement.png?branch=master)](http://travis-ci.org/igorw/evenement)
 
 ## Fetch
 
