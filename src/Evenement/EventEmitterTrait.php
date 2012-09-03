@@ -58,10 +58,18 @@ trait EventEmitterTrait
         return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
     }
 
-    public function emit($event, array $arguments = [])
+    public function emit($event, $arguments = NULL)
     {
+        $parameters = func_get_args();
+        array_shift($parameters);
+        
         foreach ($this->listeners($event) as $listener) {
-            call_user_func_array($listener, $arguments);
+            $result = call_user_func_array($listener, $arguments);
+            if($result !== NULL) {
+                $arguments = $result;
+            }
         }
+        
+        return $arguments;
     }
 }
