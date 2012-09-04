@@ -29,7 +29,7 @@ trait EventEmitterTrait
         $onceListener = function () use (&$onceListener, $event, $listener) {
             $this->removeListener($event, $onceListener);
 
-            $listener($event, $listener);
+            call_user_func_array($listener, func_get_args());
         };
 
         $this->on($event, $onceListener);
