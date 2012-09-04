@@ -66,6 +66,19 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1, $listenerCalled);
     }
 
+    public function testOnceWithArguments()
+    {
+        $capturedArgs = [];
+
+        $this->emitter->once('foo', function ($a, $b) use (&$capturedArgs) {
+            $capturedArgs = array($a, $b);
+        });
+
+        $this->emitter->emit('foo', array('a', 'b'));
+
+        $this->assertSame(array('a', 'b'), $capturedArgs);
+    }
+
     public function testEmitWithoutArguments()
     {
         $listenerCalled = false;
