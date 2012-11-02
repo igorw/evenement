@@ -20,12 +20,12 @@ Just create a composer.json file for your project:
 ```JSON
 {
     "require": {
-        "evenement/evenement": "dev-master"
+        "evenement/evenement": "2.0.*"
     }
 }
 ```
 
-**Note:** The `dev-master` version of Événement requires PHP 5.4. If you are
+**Note:** The `2.0.*` version of Événement requires PHP 5.4. If you are
 using PHP 5.3, please use the `1.0.*` version:
 
 ```JSON
