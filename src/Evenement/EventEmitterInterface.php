@@ -13,6 +13,7 @@ namespace Evenement;
 
 interface EventEmitterInterface
 {
+
 	/**
      * Register some logic (contained with in a callable, e.g. closure, method, function etc.) that
      * responds to a particular event (whether or not it actually occurs).
