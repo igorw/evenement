@@ -21,7 +21,8 @@ trait EventEmitterTrait
             $this->listeners[$event] = [];
         }
 
-        $this->listeners[$event][] = $listener;
+        $index = static::buildIndex($listener);
+        $this->listeners[$event][$index] = $listener;
     }
 
     public function once($event, callable $listener)
@@ -38,7 +39,8 @@ trait EventEmitterTrait
     public function removeListener($event, callable $listener)
     {
         if (isset($this->listeners[$event])) {
-            if (false !== $index = array_search($listener, $this->listeners[$event], true)) {
+            $index = static::buildIndex($listener);
+            if (isset($this->listeners[$event][$index])) {
                 unset($this->listeners[$event][$index]);
             }
         }
@@ -63,5 +65,22 @@ trait EventEmitterTrait
         foreach ($this->listeners($event) as $listener) {
             call_user_func_array($listener, $arguments);
         }
+    }
+
+    protected static function buildIndex($listener)
+    {
+        if (is_string($listener)) {
+            return $listener;
+        }
+
+        if (is_array($listener)) {
+            $key = '';
+            foreach ($listener as $part) {
+                $key .= self::buildIndex($part);
+            }
+            return $key;
+        }
+
+        return spl_object_hash($listener);
     }
 }
