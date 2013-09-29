@@ -38,7 +38,8 @@ trait EventEmitterTrait
     public function removeListener($event, callable $listener)
     {
         if (isset($this->listeners[$event])) {
-            if (false !== $index = array_search($listener, $this->listeners[$event], true)) {
+            $index = array_search($listener, $this->listeners[$event], true);
+            if (false !== $index) {
                 unset($this->listeners[$event][$index]);
             }
         }
