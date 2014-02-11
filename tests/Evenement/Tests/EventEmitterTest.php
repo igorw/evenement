@@ -167,6 +167,22 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(0, $listenersCalled);
     }
 
+    public function testRemoveListenerAddedWithOnce()
+    {
+        $listenersCalled = 0;
+
+        $listener = function () use (&$listenersCalled) {
+            $listenersCalled++;
+        };
+
+        $this->emitter->once('foo', $listener);
+        $this->emitter->removeListener('foo', $listener);
+
+        $this->assertSame(0, $listenersCalled);
+        $this->emitter->emit('foo');
+        $this->assertSame(0, $listenersCalled);
+    }
+
     public function testRemoveListenerNotMatching()
     {
         $listenersCalled = 0;
