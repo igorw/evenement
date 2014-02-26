@@ -13,8 +13,15 @@ namespace Evenement;
 
 trait EventEmitterTrait
 {
+    /**
+     * @var array
+     */
     protected $listeners = [];
 
+    /**
+     * @param string $event
+     * @param callable $listener
+     */
     public function on($event, callable $listener)
     {
         if (!isset($this->listeners[$event])) {
@@ -24,6 +31,10 @@ trait EventEmitterTrait
         $this->listeners[$event][] = $listener;
     }
 
+    /**
+     * @param string $event
+     * @param callable $listener
+     */
     public function once($event, callable $listener)
     {
         $onceListener = function () use (&$onceListener, $event, $listener) {
@@ -35,6 +46,10 @@ trait EventEmitterTrait
         $this->on($event, $onceListener);
     }
 
+    /**
+     * @param string $event
+     * @param callable $listener
+     */
     public function removeListener($event, callable $listener)
     {
         if (isset($this->listeners[$event])) {
@@ -45,6 +60,9 @@ trait EventEmitterTrait
         }
     }
 
+    /**
+     * @param string|null $event
+     */
     public function removeAllListeners($event = null)
     {
         if ($event !== null) {
@@ -54,11 +72,19 @@ trait EventEmitterTrait
         }
     }
 
+    /**
+     * @param string $event
+     * @return array
+     */
     public function listeners($event)
     {
         return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
     }
 
+    /**
+     * @param string $event
+     * @param array $arguments
+     */
     public function emit($event, array $arguments = [])
     {
         foreach ($this->listeners($event) as $listener) {
