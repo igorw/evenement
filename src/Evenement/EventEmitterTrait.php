@@ -144,7 +144,7 @@ trait EventEmitterTrait
     {
         if (isset($this->mutedListeners[$event])) {
             if (null !== $listener) {
-                $index = array_search($listener, $this->listeners[$event], true);
+                $index = array_search($listener, $this->mutedListeners[$event], true);
                 if (false !== $index) {
                     if (!isset($this->listeners[$event])) {
                         $this->listeners[$event] = [];

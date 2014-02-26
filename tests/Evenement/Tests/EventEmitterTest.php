@@ -15,6 +15,7 @@ use Evenement\EventEmitter;
 
 class EventEmitterTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var \Evenement\EventEmitter $emitter */
     private $emitter;
 
     public function setUp()
@@ -231,5 +232,81 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         $this->emitter->emit('foo');
         $this->emitter->emit('bar');
         $this->assertSame(0, $listenersCalled);
+    }
+
+    public function testMuteAllListeners()
+    {
+        $listenersCalled = 0;
+
+        $this->emitter->on('foo', function () use (&$listenersCalled) {
+            $listenersCalled++;
+        });
+
+        $this->emitter->on('bar', function () use (&$listenersCalled) {
+            $listenersCalled++;
+        });
+
+        $this->emitter->muteAll();
+        $this->emitter->emit('foo');
+        $this->emitter->emit('bar');
+
+        $this->assertEquals(0, $listenersCalled);
+
+        $this->emitter->unMuteAll();
+        $this->emitter->emit('foo');
+        $this->emitter->emit('bar');
+
+        $this->assertEquals(2, $listenersCalled);
+    }
+
+    public function testMuteListeners()
+    {
+        $listenersCalled = 0;
+
+        $this->emitter->on('foo', function () use (&$listenersCalled) {
+            $listenersCalled++;
+        });
+
+        $this->emitter->on('bar', function () use (&$listenersCalled) {
+            $listenersCalled++;
+        });
+
+        $this->emitter->mute('foo');
+        $this->emitter->emit('foo');
+        $this->emitter->emit('bar');
+
+        $this->assertEquals(1, $listenersCalled);
+
+        $this->emitter->unMute('foo');
+        $this->emitter->emit('foo');
+        $this->emitter->emit('bar');
+
+        $this->assertEquals(3, $listenersCalled);
+    }
+
+    public function testMuteListener()
+    {
+        $listenersCalled = 0;
+
+        $listener = function () use (&$listenersCalled) {
+            $listenersCalled++;
+        };
+
+        $this->emitter->on('foo', $listener);
+
+        $this->emitter->on('foo', function () use (&$listenersCalled) {
+            $listenersCalled++;
+            return;
+        });
+
+        $this->emitter->mute('foo', $listener);
+        $this->emitter->emit('foo');
+
+        $this->assertEquals(1, $listenersCalled);
+
+        $this->emitter->unMute('foo', $listener);
+        $this->emitter->emit('foo');
+
+        $this->assertEquals(3, $listenersCalled);
     }
 }
