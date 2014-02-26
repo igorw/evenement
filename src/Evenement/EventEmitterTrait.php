@@ -26,6 +26,7 @@ trait EventEmitterTrait
     /**
      * @param string $event
      * @param callable $listener
+     * @return $this
      */
     public function on($event, callable $listener)
     {
@@ -34,11 +35,13 @@ trait EventEmitterTrait
         }
 
         $this->listeners[$event][] = $listener;
+        return $this;
     }
 
     /**
      * @param string $event
      * @param callable $listener
+     * @return $this
      */
     public function once($event, callable $listener)
     {
@@ -49,11 +52,13 @@ trait EventEmitterTrait
         };
 
         $this->on($event, $onceListener);
+        return $this;
     }
 
     /**
      * @param string $event
      * @param callable $listener
+     * @return $this
      */
     public function removeListener($event, callable $listener)
     {
@@ -63,10 +68,12 @@ trait EventEmitterTrait
                 unset($this->listeners[$event][$index]);
             }
         }
+        return $this;
     }
 
     /**
      * @param string|null $event
+     * @return $this
      */
     public function removeAllListeners($event = null)
     {
@@ -75,6 +82,7 @@ trait EventEmitterTrait
         } else {
             $this->listeners = [];
         }
+        return $this;
     }
 
     /**
@@ -98,12 +106,14 @@ trait EventEmitterTrait
     /**
      * @param string $event
      * @param array $arguments
+     * @return $this
      */
     public function emit($event, array $arguments = [])
     {
         foreach ($this->listeners($event) as $listener) {
             call_user_func_array($listener, $arguments);
         }
+        return $this;
     }
 
     /**
