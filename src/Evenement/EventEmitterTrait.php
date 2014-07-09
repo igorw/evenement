@@ -13,8 +13,21 @@ namespace Evenement;
 
 trait EventEmitterTrait
 {
+    /**
+     * @var array
+     */
     protected $listeners = [];
 
+    /**
+     * @var array
+     */
+    protected $mutedListeners = [];
+
+    /**
+     * @param string $event
+     * @param callable $listener
+     * @return $this
+     */
     public function on($event, callable $listener)
     {
         if (!isset($this->listeners[$event])) {
@@ -22,8 +35,14 @@ trait EventEmitterTrait
         }
 
         $this->listeners[$event][] = $listener;
+        return $this;
     }
 
+    /**
+     * @param string $event
+     * @param callable $listener
+     * @return $this
+     */
     public function once($event, callable $listener)
     {
         $onceListener = function () use (&$onceListener, $event, $listener) {
@@ -33,8 +52,14 @@ trait EventEmitterTrait
         };
 
         $this->on($event, $onceListener);
+        return $this;
     }
 
+    /**
+     * @param string $event
+     * @param callable $listener
+     * @return $this
+     */
     public function removeListener($event, callable $listener)
     {
         if (isset($this->listeners[$event])) {
@@ -43,8 +68,13 @@ trait EventEmitterTrait
                 unset($this->listeners[$event][$index]);
             }
         }
+        return $this;
     }
 
+    /**
+     * @param string|null $event
+     * @return $this
+     */
     public function removeAllListeners($event = null)
     {
         if ($event !== null) {
@@ -52,17 +82,127 @@ trait EventEmitterTrait
         } else {
             $this->listeners = [];
         }
+        return $this;
     }
 
+    /**
+     * @param string $event
+     * @return array
+     */
     public function listeners($event)
+    {
+        return $this->getListeners($event);
+    }
+
+    /**
+     * @param string $event
+     * @return array
+     */
+    public function getListeners($event)
     {
         return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
     }
 
+    /**
+     * @param string $event
+     * @param array $arguments
+     * @return $this
+     */
     public function emit($event, array $arguments = [])
     {
         foreach ($this->listeners($event) as $listener) {
             call_user_func_array($listener, $arguments);
         }
+        return $this;
+    }
+
+    /**
+     * @param $event
+     * @param callable $listener
+     * @return $this
+     */
+    public function mute($event, callable $listener = null)
+    {
+        if (isset($this->listeners[$event])) {
+            if (null !== $listener) {
+                $index = array_search($listener, $this->listeners[$event], true);
+                if (false !== $index) {
+                    if (!isset($this->mutedListeners[$event])) {
+                        $this->mutedListeners[$event] = [];
+                    }
+                    $this->mutedListeners[$event][$index] = $this->listeners[$event][$index];
+                    unset($this->listeners[$event][$index]);
+                }
+            } else {
+                if (isset($this->mutedListeners[$event])) {
+                    $this->mutedListeners[$event] = array_merge($this->mutedListeners[$event], $this->listeners[$event]);
+                } else {
+                    $this->mutedListeners[$event] = $this->listeners[$event];
+                }
+                unset($this->listeners[$event]);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @param string $event
+     * @param callable $listener
+     * @return $this
+     */
+    public function unMute($event, callable $listener = null)
+    {
+        if (isset($this->mutedListeners[$event])) {
+            if (null !== $listener) {
+                $index = array_search($listener, $this->mutedListeners[$event], true);
+                if (false !== $index) {
+                    if (!isset($this->listeners[$event])) {
+                        $this->listeners[$event] = [];
+                    }
+                    $this->listeners[$event][$index] = $this->mutedListeners[$event][$index];
+                    unset($this->mutedListeners[$event][$index]);
+                }
+            } else {
+                if (isset($this->listeners[$event])) {
+                    $this->listeners[$event] = array_merge($this->listeners[$event], $this->mutedListeners[$event]);
+                } else {
+                    $this->listeners[$event] = $this->mutedListeners[$event];
+                }
+                unset($this->mutedListeners[$event]);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function muteAll()
+    {
+        foreach ($this->listeners as $event => $listeners) {
+            if (isset($this->mutedListeners[$event])) {
+                $this->mutedListeners[$event] = array_merge($this->mutedListeners[$event], $listeners);
+            } else {
+                $this->mutedListeners[$event] = $listeners;
+            }
+            unset($this->listeners[$event]);
+        }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function unMuteAll()
+    {
+        foreach ($this->mutedListeners as $event => $listeners) {
+            if (isset($this->listeners[$event])) {
+                $this->listeners[$event] = array_merge($this->listeners[$event], $listeners);
+            } else {
+                $this->listeners[$event] = $listeners;
+            }
+            unset($this->mutedListeners[$event]);
+        }
+        return $this;
     }
 }
