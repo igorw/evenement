@@ -83,7 +83,7 @@ In the code that creates the post, I'll insert the `post.create` event:
     $post = createPostFromRequest($_POST);
 
     $event = new PostEvent($post);
-    $emitter->emit('post.create', array($event));
+    $emitter->emit('post.create', $event);
     $post = $event->post;
 
     $db->save('post', $post);
@@ -98,7 +98,7 @@ The same thing for the `post.render` event:
         $emitter = $this->emitter;
 
         $event = new PostEvent($post);
-        $emitter->emit('post.render', array($event));
+        $emitter->emit('post.render', $event);
         $post = $event->post;
 
         return $post['body'];

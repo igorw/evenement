@@ -40,19 +40,19 @@ Example:
         $conn->send($data);
     });
 
-## emit($event, array $arguments = [])
+## emit($event, ...$arguments)
 
 Emit an event, which will call all listeners.
 
 Example:
 
-    $conn->emit('data', array($data));
+    $conn->emit('data', $data);
 
-The second argument to emit is an array of listener arguments. This is how you
+Emit is variadic and each argument will be gathered into an array of listener arguments. This is how you
 specify more args:
 
     $result = $a + $b;
-    $emitter->emit('numbers_added', array($result, $a, $b));
+    $emitter->emit('numbers_added', $result, $a, $b);
 
 ## listeners($event)
 
