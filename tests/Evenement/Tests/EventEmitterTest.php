@@ -74,7 +74,7 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
             $capturedArgs = array($a, $b);
         });
 
-        $this->emitter->emit('foo', array('a', 'b'));
+        $this->emitter->emit('foo', 'a', 'b');
 
         $this->assertSame(array('a', 'b'), $capturedArgs);
     }
@@ -105,7 +105,7 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->assertSame(false, $listenerCalled);
-        $this->emitter->emit('foo', ['bar']);
+        $this->emitter->emit('foo', 'bar');
         $this->assertSame(true, $listenerCalled);
     }
 
@@ -123,7 +123,7 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->assertSame(false, $listenerCalled);
-        $this->emitter->emit('foo', ['bar', 'baz']);
+        $this->emitter->emit('foo', 'bar', 'baz');
         $this->assertSame(true, $listenerCalled);
     }
 
