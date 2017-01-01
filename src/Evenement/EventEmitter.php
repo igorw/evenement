@@ -11,6 +11,13 @@
 
 namespace Evenement;
 
+/**
+ * An object that contains a series of properties and methods
+ * (From EventEmitterTrait) which allow a piece of logic to recieve,
+ * react and compose responses to specific events.
+ *
+ * @author Igor Wiedler <igor@wiedler.ch>
+ */
 class EventEmitter implements EventEmitterInterface
 {
     use EventEmitterTrait;
