@@ -18,5 +18,5 @@ interface EventEmitterInterface
     public function removeListener($event, callable $listener);
     public function removeAllListeners($event = null);
     public function listeners($event);
-    public function emit($event, array $arguments = []);
+    public function emit($event, $arguments = []);
 }
