@@ -59,10 +59,10 @@ trait EventEmitterTrait
         return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
     }
 
-    public function emit($event, array $arguments = [])
+    public function emit($event, $arguments = [])
     {
         foreach ($this->listeners($event) as $listener) {
-            call_user_func_array($listener, $arguments);
+            call_user_func_array($listener, (array) $arguments);
         }
     }
 }

@@ -15,6 +15,7 @@ use Evenement\EventEmitter;
 
 class EventEmitterTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var  EventEmitter */
     private $emitter;
 
     public function setUp()
@@ -43,7 +44,7 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         try {
             $this->emitter->on('foo', 'not a callable');
             $this->fail();
-        } catch (\Exception $e) {
+        } catch (\Error $e) {
         }
     }
 
@@ -96,17 +97,19 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
     {
         $test = $this;
 
-        $listenerCalled = false;
+        $listenerCalled = 0;
 
         $this->emitter->on('foo', function ($value) use (&$listenerCalled, $test) {
-            $listenerCalled = true;
+            $listenerCalled++;
 
             $test->assertSame('bar', $value);
         });
 
-        $this->assertSame(false, $listenerCalled);
+        $this->assertSame(0, $listenerCalled);
         $this->emitter->emit('foo', ['bar']);
-        $this->assertSame(true, $listenerCalled);
+        $this->assertSame(1, $listenerCalled);
+        $this->emitter->emit('foo', 'bar');
+        $this->assertSame(2, $listenerCalled);
     }
 
     public function testEmitWithTwoArguments()
