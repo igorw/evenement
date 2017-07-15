@@ -26,6 +26,8 @@ class EventEmitter implements EventEmitterInterface
         }
 
         $this->listeners[$event][] = $listener;
+
+        return $this;
     }
 
     public function once($event, $listener)
