@@ -12,8 +12,9 @@
 namespace Evenement\Tests;
 
 use Evenement\EventEmitter;
+use PHPUnit\Framework\TestCase;
 
-class EventEmitterTest extends \PHPUnit_Framework_TestCase
+class EventEmitterTest extends TestCase
 {
     private $emitter;
 
