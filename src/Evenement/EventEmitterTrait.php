@@ -43,6 +43,9 @@ trait EventEmitterTrait
             $index = array_search($listener, $this->listeners[$event], true);
             if (false !== $index) {
                 unset($this->listeners[$event][$index]);
+                if (count($this->listeners[$event]) === 0) {
+                    unset($this->listeners[$event]);
+                }
             }
         }
     }
