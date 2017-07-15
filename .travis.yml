@@ -15,8 +15,7 @@ before_script:
   - php composer.phar install
 
 script:
-  - phpunit --coverage-text
+  - ./vendor/bin/phpunit --coverage-text
   - php examples/benchmark-emit-no-arguments.php
   - php examples/benchmark-emit-one-argument.php
   - php examples/benchmark-emit.php
-script: ./vendor/bin/phpunit --coverage-text
