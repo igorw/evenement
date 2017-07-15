@@ -44,6 +44,7 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
             $this->emitter->on('foo', 'not a callable');
             $this->fail();
         } catch (\Exception $e) {
+        } catch (\TypeError $e) {
         }
     }
 
