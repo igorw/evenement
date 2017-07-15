@@ -14,4 +14,8 @@ before_script:
   - wget http://getcomposer.org/composer.phar
   - php composer.phar install
 
-script: phpunit --coverage-text
+script:
+  - phpunit --coverage-text
+  - php examples/benchmark-emit-no-arguments.php
+  - php examples/benchmark-emit-one-argument.php
+  - php examples/benchmark-emit.php
