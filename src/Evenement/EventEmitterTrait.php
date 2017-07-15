@@ -14,6 +14,7 @@ namespace Evenement;
 trait EventEmitterTrait
 {
     protected $listeners = [];
+    protected $removeOnEmit = [];
 
     public function on($event, callable $listener)
     {
@@ -28,13 +29,14 @@ trait EventEmitterTrait
 
     public function once($event, callable $listener)
     {
-        $onceListener = function () use (&$onceListener, $event, $listener) {
-            $this->removeListener($event, $onceListener);
+        $this->on($event, $listener);
 
-            call_user_func_array($listener, func_get_args());
-        };
+        if (!isset($this->removeOnEmit[$event])) {
+            $this->removeOnEmit[$event] = [];
+        }
 
-        $this->on($event, $onceListener);
+        $index = count($this->listeners[$event]) - 1;
+        $this->removeOnEmit[$event][$index] = true;
     }
 
     public function removeListener($event, callable $listener)
@@ -42,7 +44,10 @@ trait EventEmitterTrait
         if (isset($this->listeners[$event])) {
             $index = array_search($listener, $this->listeners[$event], true);
             if (false !== $index) {
-                unset($this->listeners[$event][$index]);
+                unset(
+                    $this->listeners[$event][$index],
+                    $this->removeOnEmit[$event][$index]
+                );
             }
         }
     }
@@ -50,9 +55,13 @@ trait EventEmitterTrait
     public function removeAllListeners($event = null)
     {
         if ($event !== null) {
-            unset($this->listeners[$event]);
+            unset(
+                $this->listeners[$event],
+                $this->removeOnEmit[$event]
+            );
         } else {
             $this->listeners = [];
+            $this->removeOnEmit = [];
         }
     }
 
@@ -63,8 +72,14 @@ trait EventEmitterTrait
 
     public function emit($event, array $arguments = [])
     {
-        foreach ($this->listeners($event) as $listener) {
+        foreach ($this->listeners($event) as $index => $listener) {
             call_user_func_array($listener, $arguments);
+            if (isset($this->removeOnEmit[$event][$index])) {
+                unset(
+                    $this->listeners[$event][$index],
+                    $this->removeOnEmit[$event][$index]
+                );
+            }
         }
     }
 }
