@@ -22,6 +22,8 @@ trait EventEmitterTrait
         }
 
         $this->listeners[$event][] = $listener;
+
+        return $this;
     }
 
     public function once($event, callable $listener)
