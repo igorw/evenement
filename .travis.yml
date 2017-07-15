@@ -20,6 +20,6 @@ before_script:
 
 script:
   - ./vendor/bin/phpunit --coverage-text
-  - php examples/benchmark-emit-no-arguments.php
-  - php examples/benchmark-emit-one-argument.php
-  - php examples/benchmark-emit.php
+  - php -n examples/benchmark-emit-no-arguments.php
+  - php -n examples/benchmark-emit-one-argument.php
+  - php -n examples/benchmark-emit.php
