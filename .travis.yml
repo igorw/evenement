@@ -19,3 +19,4 @@ script:
   - php examples/benchmark-emit-no-arguments.php
   - php examples/benchmark-emit-one-argument.php
   - php examples/benchmark-emit.php
+script: ./vendor/bin/phpunit --coverage-text

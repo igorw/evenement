@@ -9,7 +9,6 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="tests/bootstrap.php"
 >
     <testsuites>
         <testsuite name="Evenement Test Suite">
