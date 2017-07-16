@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+ini_set('memory_limit', '512M');
+
 const ITERATIONS = 100000;
 
 use Evenement\EventEmitter;
