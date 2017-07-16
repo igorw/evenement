@@ -28,10 +28,10 @@ trait EventEmitterTrait
 
     public function once($event, callable $listener)
     {
-        $onceListener = function () use (&$onceListener, $event, $listener) {
+        $onceListener = function (...$args) use (&$onceListener, $event, $listener) {
             $this->removeListener($event, $onceListener);
 
-            $listener(...func_get_args());
+            $listener(...$args);
         };
 
         $this->on($event, $onceListener);
