@@ -23,3 +23,4 @@ script:
   - php -n examples/benchmark-emit-no-arguments.php
   - php -n examples/benchmark-emit-one-argument.php
   - php -n examples/benchmark-emit.php
+  - php -n examples/benchmark-emit-once.php
