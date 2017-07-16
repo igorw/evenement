@@ -59,9 +59,13 @@ trait EventEmitterTrait
         }
     }
 
-    public function listeners($event)
+    public function listeners($event = null)
     {
-        return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
+        if ($event !== null) {
+            return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
+        }
+
+        return $this->listeners;
     }
 
     public function emit($event, array $arguments = [])
