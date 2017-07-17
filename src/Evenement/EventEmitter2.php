@@ -18,7 +18,7 @@ class EventEmitter2 extends EventEmitter
 
     public function __construct(array $options = array())
     {
-        $this->options = array_merge(array(
+        $this->options = \array_merge(array(
             'delimiter' => '.',
         ), $options);
     }
@@ -30,7 +30,7 @@ class EventEmitter2 extends EventEmitter
 
     public function offAny($listener)
     {
-        if (false !== $index = array_search($listener, $this->anyListeners, true)) {
+        if (false !== $index = \array_search($listener, $this->anyListeners, true)) {
             unset($this->anyListeners[$index]);
         }
     }
@@ -54,7 +54,7 @@ class EventEmitter2 extends EventEmitter
                 $that->removeListener($event, $manyListener);
             }
 
-            call_user_func_array($listener, func_get_args());
+            \call_user_func_array($listener, \func_get_args());
         };
 
         $this->on($event, $manyListener);
@@ -63,7 +63,7 @@ class EventEmitter2 extends EventEmitter
     public function emit($event, array $arguments = array())
     {
         foreach ($this->anyListeners as $listener) {
-            call_user_func_array($listener, $arguments);
+            \call_user_func_array($listener, $arguments);
         }
 
         parent::emit($event, $arguments);
@@ -86,14 +86,14 @@ class EventEmitter2 extends EventEmitter
 
     protected function matchEventName($matchPattern, $eventName)
     {
-        $patternParts = explode($this->options['delimiter'], $matchPattern);
-        $nameParts = explode($this->options['delimiter'], $eventName);
+        $patternParts = \explode($this->options['delimiter'], $matchPattern);
+        $nameParts = \explode($this->options['delimiter'], $eventName);
 
-        if (count($patternParts) != count($nameParts)) {
+        if (\count($patternParts) != \count($nameParts)) {
             return false;
         }
 
-        $size = min(count($patternParts), count($nameParts));
+        $size = \min(\count($patternParts), \count($nameParts));
         for ($i = 0; $i < $size; $i++) {
             $patternPart = $patternParts[$i];
             $namePart = $nameParts[$i];

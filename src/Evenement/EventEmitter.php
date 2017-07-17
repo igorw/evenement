@@ -17,7 +17,7 @@ class EventEmitter implements EventEmitterInterface
 
     public function on($event, $listener)
     {
-        if (!is_callable($listener)) {
+        if (!\is_callable($listener)) {
             throw new \InvalidArgumentException('The provided listener was not a valid callable.');
         }
 
@@ -37,7 +37,7 @@ class EventEmitter implements EventEmitterInterface
         $onceListener = function () use ($that, &$onceListener, $event, $listener) {
             $that->removeListener($event, $onceListener);
 
-            call_user_func_array($listener, func_get_args());
+            \call_user_func_array($listener, \func_get_args());
         };
 
         $this->on($event, $onceListener);
@@ -46,7 +46,7 @@ class EventEmitter implements EventEmitterInterface
     public function removeListener($event, $listener)
     {
         if (isset($this->listeners[$event])) {
-            if (false !== $index = array_search($listener, $this->listeners[$event], true)) {
+            if (false !== $index = \array_search($listener, $this->listeners[$event], true)) {
                 unset($this->listeners[$event][$index]);
             }
         }
@@ -69,7 +69,7 @@ class EventEmitter implements EventEmitterInterface
     public function emit($event, array $arguments = array())
     {
         foreach ($this->listeners($event) as $listener) {
-            call_user_func_array($listener, $arguments);
+            \call_user_func_array($listener, $arguments);
         }
     }
 }
