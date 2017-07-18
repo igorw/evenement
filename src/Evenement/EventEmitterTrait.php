@@ -40,10 +40,10 @@ trait EventEmitterTrait
     public function removeListener($event, callable $listener)
     {
         if (isset($this->listeners[$event])) {
-            $index = array_search($listener, $this->listeners[$event], true);
+            $index = \array_search($listener, $this->listeners[$event], true);
             if (false !== $index) {
                 unset($this->listeners[$event][$index]);
-                if (count($this->listeners[$event]) === 0) {
+                if (\count($this->listeners[$event]) === 0) {
                     unset($this->listeners[$event]);
                 }
             }
