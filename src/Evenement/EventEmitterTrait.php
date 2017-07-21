@@ -78,7 +78,10 @@ trait EventEmitterTrait
 
     public function listeners($event)
     {
-        return (isset($this->listeners[$event]) ? $this->listeners[$event] : []) + (isset($this->onceListeners[$event]) ? $this->onceListeners[$event] : []);
+        return array_merge(
+            isset($this->listeners[$event]) ? $this->listeners[$event] : [],
+            isset($this->onceListeners[$event]) ? $this->onceListeners[$event] : []
+        );
     }
 
     public function emit($event, array $arguments = [])
