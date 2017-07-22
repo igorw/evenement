@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * This file is part of Evenement.
@@ -16,7 +16,7 @@ trait EventEmitterTrait
     protected $listeners = [];
     protected $onceListeners = [];
 
-    public function on($event, callable $listener)
+    public function on(string $event, callable $listener)
     {
         if (!isset($this->listeners[$event])) {
             $this->listeners[$event] = [];
@@ -27,7 +27,7 @@ trait EventEmitterTrait
         return $this;
     }
 
-    public function once($event, callable $listener)
+    public function once(string $event, callable $listener)
     {
         if (!isset($this->onceListeners[$event])) {
             $this->onceListeners[$event] = [];
@@ -38,7 +38,7 @@ trait EventEmitterTrait
         return $this;
     }
 
-    public function removeListener($event, callable $listener)
+    public function removeListener(string $event, callable $listener)
     {
         if (isset($this->listeners[$event])) {
             $index = \array_search($listener, $this->listeners[$event], true);
@@ -61,7 +61,7 @@ trait EventEmitterTrait
         }
     }
 
-    public function removeAllListeners($event = null)
+    public function removeAllListeners(string $event = null)
     {
         if ($event !== null) {
             unset($this->listeners[$event]);
@@ -76,7 +76,7 @@ trait EventEmitterTrait
         }
     }
 
-    public function listeners($event)
+    public function listeners(string $event): array
     {
         return array_merge(
             isset($this->listeners[$event]) ? $this->listeners[$event] : [],
@@ -84,7 +84,7 @@ trait EventEmitterTrait
         );
     }
 
-    public function emit($event, array $arguments = [])
+    public function emit(string $event, array $arguments = [])
     {
         if (isset($this->listeners[$event])) {
             foreach ($this->listeners[$event] as $listener) {

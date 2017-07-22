@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * This file is part of Evenement.
@@ -13,10 +13,10 @@ namespace Evenement;
 
 interface EventEmitterInterface
 {
-    public function on($event, callable $listener);
-    public function once($event, callable $listener);
-    public function removeListener($event, callable $listener);
-    public function removeAllListeners($event = null);
-    public function listeners($event);
-    public function emit($event, array $arguments = []);
+    public function on(string $event, callable $listener);
+    public function once(string $event, callable $listener);
+    public function removeListener(string $event, callable $listener);
+    public function removeAllListeners(string $event = null);
+    public function listeners(string $event);
+    public function emit(string $event, array $arguments = []);
 }
