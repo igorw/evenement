@@ -288,4 +288,71 @@ class EventEmitterTest extends TestCase
 
         unset($GLOBALS['evenement-evenement-test-data']);
     }
+
+    public function testListeners()
+    {
+        $onA = function () {};
+        $onB = function () {};
+        $onC = function () {};
+        $onceA = function () {};
+        $onceB = function () {};
+        $onceC = function () {};
+
+        self::assertCount(0, $this->emitter->listeners('event'));
+        $this->emitter->on('event', $onA);
+        self::assertCount(1, $this->emitter->listeners('event'));
+        self::assertSame([$onA], $this->emitter->listeners('event'));
+        $this->emitter->once('event', $onceA);
+        self::assertCount(2, $this->emitter->listeners('event'));
+        self::assertSame([$onA, $onceA], $this->emitter->listeners('event'));
+        $this->emitter->once('event', $onceB);
+        self::assertCount(3, $this->emitter->listeners('event'));
+        self::assertSame([$onA, $onceA, $onceB], $this->emitter->listeners('event'));
+        $this->emitter->on('event', $onB);
+        self::assertCount(4, $this->emitter->listeners('event'));
+        self::assertSame([$onA, $onB, $onceA, $onceB], $this->emitter->listeners('event'));
+        $this->emitter->removeListener('event', $onceA);
+        self::assertCount(3, $this->emitter->listeners('event'));
+        self::assertSame([$onA, $onB, $onceB], $this->emitter->listeners('event'));
+        $this->emitter->once('event', $onceC);
+        self::assertCount(4, $this->emitter->listeners('event'));
+        self::assertSame([$onA, $onB, $onceB, $onceC], $this->emitter->listeners('event'));
+        $this->emitter->on('event', $onC);
+        self::assertCount(5, $this->emitter->listeners('event'));
+        self::assertSame([$onA, $onB, $onC, $onceB, $onceC], $this->emitter->listeners('event'));
+        $this->emitter->once('event', $onceA);
+        self::assertCount(6, $this->emitter->listeners('event'));
+        self::assertSame([$onA, $onB, $onC, $onceB, $onceC, $onceA], $this->emitter->listeners('event'));
+        $this->emitter->removeListener('event', $onB);
+        self::assertCount(5, $this->emitter->listeners('event'));
+        self::assertSame([$onA, $onC, $onceB, $onceC, $onceA], $this->emitter->listeners('event'));
+        $this->emitter->emit('event');
+        self::assertCount(2, $this->emitter->listeners('event'));
+        self::assertSame([$onA, $onC], $this->emitter->listeners('event'));
+    }
+
+    public function testOnceCallIsNotRemovedWhenWorkingOverOnceListeners()
+    {
+        $aCalled = false;
+        $aCallable = function () use (&$aCalled) {
+            $aCalled = true;
+        };
+        $bCalled = false;
+        $bCallable = function () use (&$bCalled, $aCallable) {
+            $bCalled = true;
+            $this->emitter->once('event', $aCallable);
+        };
+        $this->emitter->once('event', $bCallable);
+
+        self::assertFalse($aCalled);
+        self::assertFalse($bCalled);
+        $this->emitter->emit('event');
+
+        self::assertFalse($aCalled);
+        self::assertTrue($bCalled);
+        $this->emitter->emit('event');
+
+        self::assertTrue($aCalled);
+        self::assertTrue($bCalled);
+    }
 }

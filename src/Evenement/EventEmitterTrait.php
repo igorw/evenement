@@ -14,6 +14,7 @@ namespace Evenement;
 trait EventEmitterTrait
 {
     protected $listeners = [];
+    protected $onceListeners = [];
 
     public function on($event, callable $listener)
     {
@@ -28,13 +29,13 @@ trait EventEmitterTrait
 
     public function once($event, callable $listener)
     {
-        $onceListener = function (...$args) use (&$onceListener, $event, $listener) {
-            $this->removeListener($event, $onceListener);
+        if (!isset($this->onceListeners[$event])) {
+            $this->onceListeners[$event] = [];
+        }
 
-            $listener(...$args);
-        };
+        $this->onceListeners[$event][] = $listener;
 
-        $this->on($event, $onceListener);
+        return $this;
     }
 
     public function removeListener($event, callable $listener)
@@ -48,6 +49,16 @@ trait EventEmitterTrait
                 }
             }
         }
+
+        if (isset($this->onceListeners[$event])) {
+            $index = \array_search($listener, $this->onceListeners[$event], true);
+            if (false !== $index) {
+                unset($this->onceListeners[$event][$index]);
+                if (\count($this->onceListeners[$event]) === 0) {
+                    unset($this->onceListeners[$event]);
+                }
+            }
+        }
     }
 
     public function removeAllListeners($event = null)
@@ -57,17 +68,40 @@ trait EventEmitterTrait
         } else {
             $this->listeners = [];
         }
+
+        if ($event !== null) {
+            unset($this->onceListeners[$event]);
+        } else {
+            $this->onceListeners = [];
+        }
     }
 
     public function listeners($event)
     {
-        return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
+        return array_merge(
+            isset($this->listeners[$event]) ? $this->listeners[$event] : [],
+            isset($this->onceListeners[$event]) ? $this->onceListeners[$event] : []
+        );
     }
 
     public function emit($event, array $arguments = [])
     {
-        foreach ($this->listeners($event) as $listener) {
-            $listener(...$arguments);
+        if (isset($this->listeners[$event])) {
+            foreach ($this->listeners[$event] as $listener) {
+                $listener(...$arguments);
+            }
+        }
+
+        if (isset($this->onceListeners[$event])) {
+            $keys = array_keys($this->onceListeners[$event]);
+            foreach ($keys as $key) {
+                ($this->onceListeners[$event][$key])(...$arguments);
+                unset($this->onceListeners[$event][$key]);
+            }
+
+            if (count($this->onceListeners[$event]) === 0) {
+                unset($this->onceListeners[$event]);
+            }
         }
     }
 }
