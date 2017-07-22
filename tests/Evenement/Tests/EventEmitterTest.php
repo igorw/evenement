@@ -330,4 +330,29 @@ class EventEmitterTest extends TestCase
         self::assertCount(2, $this->emitter->listeners('event'));
         self::assertSame([$onA, $onC], $this->emitter->listeners('event'));
     }
+
+    public function testOnceCallIsNotRemovedWhenWorkingOverOnceListeners()
+    {
+        $aCalled = false;
+        $aCallable = function () use (&$aCalled) {
+            $aCalled = true;
+        };
+        $bCalled = false;
+        $bCallable = function () use (&$bCalled, $aCallable) {
+            $bCalled = true;
+            $this->emitter->once('event', $aCallable);
+        };
+        $this->emitter->once('event', $bCallable);
+
+        self::assertFalse($aCalled);
+        self::assertFalse($bCalled);
+        $this->emitter->emit('event');
+
+        self::assertFalse($aCalled);
+        self::assertTrue($bCalled);
+        $this->emitter->emit('event');
+
+        self::assertTrue($aCalled);
+        self::assertTrue($bCalled);
+    }
 }
