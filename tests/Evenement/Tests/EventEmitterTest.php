@@ -374,7 +374,7 @@ class EventEmitterTest extends TestCase
      */
     public function testEventNameMustBeStringOn($eventName)
     {
-        self::setExpectedException(TypeError::class);
+        self::expectException(TypeError::class);
 
         $this->emitter->on($eventName, function () {});
     }
@@ -384,7 +384,7 @@ class EventEmitterTest extends TestCase
      */
     public function testEventNameMustBeStringOnce($eventName)
     {
-        self::setExpectedException(TypeError::class);
+        self::expectException(TypeError::class);
 
         $this->emitter->once($eventName, function () {});
     }
@@ -394,7 +394,7 @@ class EventEmitterTest extends TestCase
      */
     public function testEventNameMustBeStringRemoveListener($eventName)
     {
-        self::setExpectedException(TypeError::class);
+        self::expectException(TypeError::class);
 
         $this->emitter->removeListener($eventName, function () {});
     }
@@ -410,7 +410,7 @@ class EventEmitterTest extends TestCase
             return;
         }
 
-        self::setExpectedException(TypeError::class);
+        self::expectException(TypeError::class);
 
         $this->emitter->removeAllListeners($eventName);
     }
@@ -420,7 +420,7 @@ class EventEmitterTest extends TestCase
      */
     public function testEventNameMustBeStringListeners($eventName)
     {
-        self::setExpectedException(TypeError::class);
+        self::expectException(TypeError::class);
 
         $this->emitter->listeners($eventName, function () {});
     }
@@ -430,7 +430,7 @@ class EventEmitterTest extends TestCase
      */
     public function testEventNameMustBeStringEmit($eventName)
     {
-        self::setExpectedException(TypeError::class);
+        self::expectException(TypeError::class);
 
         $this->emitter->emit($eventName);
     }
