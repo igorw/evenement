@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * This file is part of Evenement.
@@ -13,6 +13,8 @@ namespace Evenement\Tests;
 
 use Evenement\EventEmitter;
 use PHPUnit\Framework\TestCase;
+use stdClass;
+use TypeError;
 
 class EventEmitterTest extends TestCase
 {
@@ -354,5 +356,82 @@ class EventEmitterTest extends TestCase
 
         self::assertTrue($aCalled);
         self::assertTrue($bCalled);
+    }
+
+    public function provideInvalidEventNameTypes()
+    {
+        yield [null];
+        yield [0.1];
+        yield [0];
+        yield [1];
+        yield [true];
+        yield [false];
+        yield [new stdClass];
+    }
+
+    /**
+     * @dataProvider provideInvalidEventNameTypes
+     */
+    public function testEventNameMustBeStringOn($eventName)
+    {
+        self::expectException(TypeError::class);
+
+        $this->emitter->on($eventName, function () {});
+    }
+
+    /**
+     * @dataProvider provideInvalidEventNameTypes
+     */
+    public function testEventNameMustBeStringOnce($eventName)
+    {
+        self::expectException(TypeError::class);
+
+        $this->emitter->once($eventName, function () {});
+    }
+
+    /**
+     * @dataProvider provideInvalidEventNameTypes
+     */
+    public function testEventNameMustBeStringRemoveListener($eventName)
+    {
+        self::expectException(TypeError::class);
+
+        $this->emitter->removeListener($eventName, function () {});
+    }
+
+    /**
+     * @dataProvider provideInvalidEventNameTypes
+     */
+    public function testEventNameMustBeStringRemoveAllListeners($eventName)
+    {
+        if ($eventName === null) {
+            self::assertTrue(true, 'removeAllListeners accepts null as argument, no need to test against that');
+
+            return;
+        }
+
+        self::expectException(TypeError::class);
+
+        $this->emitter->removeAllListeners($eventName);
+    }
+
+    /**
+     * @dataProvider provideInvalidEventNameTypes
+     */
+    public function testEventNameMustBeStringListeners($eventName)
+    {
+        self::expectException(TypeError::class);
+
+        $this->emitter->listeners($eventName, function () {});
+    }
+
+    /**
+     * @dataProvider provideInvalidEventNameTypes
+     */
+    public function testEventNameMustBeStringEmit($eventName)
+    {
+        self::expectException(TypeError::class);
+
+        $this->emitter->emit($eventName);
     }
 }
