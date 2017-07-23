@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+* v3.0.0 (2017-07-23)
+
+  * Passing null as event name throw exception [#46](https://github.com/igorw/evenement/pull/46), and [#47](https://github.com/igorw/evenement/pull/47)
+  * Performance improvements [#39](https://github.com/igorw/evenement/pull/39), and [#45](https://github.com/igorw/evenement/pull/45)
+  * Remove once listeners [#44](https://github.com/igorw/evenement/pull/44), [#45](https://github.com/igorw/evenement/pull/45)
+
 * v2.1.0 (2017-07-17)
 
   * Chaining for "on" method [#30](https://github.com/igorw/evenement/pull/30)
