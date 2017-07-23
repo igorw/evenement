@@ -87,7 +87,7 @@ class PostEvent
 $post = createPostFromRequest($_POST);
 
 $event = new PostEvent($post);
-$emitter->emit('post.create', array($event));
+$emitter->emit('post.create', [$event]);
 $post = $event->post;
 
 $db->save('post', $post);
@@ -103,7 +103,7 @@ public function renderPostBody(array $post)
     $emitter = $this->emitter;
 
     $event = new PostEvent($post);
-    $emitter->emit('post.render', array($event));
+    $emitter->emit('post.render', [$event]);
     $post = $event->post;
 
     return $post['body'];

@@ -20,18 +20,18 @@ Just create a composer.json file for your project:
 ```JSON
 {
     "require": {
-        "evenement/evenement": "2.0.*"
+        "evenement/evenement": "^3.0 || ^2.0"
     }
 }
 ```
 
-**Note:** The `2.0.*` version of Événement requires PHP 5.4. If you are
-using PHP 5.3, please use the `1.0.*` version:
+**Note:** The `3.x` version of Événement requires PHP 7 and the `2.x` version requires PHP 5.4. If you are
+using PHP 5.3, please use the `1.x` version:
 
 ```JSON
 {
     "require": {
-        "evenement/evenement": "1.0.*"
+        "evenement/evenement": "^1.0"
     }
 }
 ```
@@ -70,13 +70,13 @@ $emitter->on('user.created', function (User $user) use ($logger) {
 
 ```php
 <?php
-$emitter->emit('user.created', array($user));
+$emitter->emit('user.created', [$user]);
 ```
 
 Tests
 -----
 
-    $ phpunit
+    $ ./vendor/bin/phpunit
 
 License
 -------
