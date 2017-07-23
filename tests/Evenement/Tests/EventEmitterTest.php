@@ -12,9 +12,8 @@
 namespace Evenement\Tests;
 
 use Evenement\EventEmitter;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use stdClass;
-use TypeError;
 
 class EventEmitterTest extends TestCase
 {
@@ -358,80 +357,64 @@ class EventEmitterTest extends TestCase
         self::assertTrue($bCalled);
     }
 
-    public function provideInvalidEventNameTypes()
+    public function testEventNameMustBeStringOn()
     {
-        yield [null];
-        yield [0.1];
-        yield [0];
-        yield [1];
-        yield [true];
-        yield [false];
-        yield [new stdClass];
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('event name must not be null');
+
+        $this->emitter->on(null, function () {});
     }
 
-    /**
-     * @dataProvider provideInvalidEventNameTypes
-     */
-    public function testEventNameMustBeStringOn($eventName)
+    public function testEventNameMustBeStringOnce()
     {
-        self::expectException(TypeError::class);
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('event name must not be null');
 
-        $this->emitter->on($eventName, function () {});
+        $this->emitter->once(null, function () {});
     }
 
-    /**
-     * @dataProvider provideInvalidEventNameTypes
-     */
-    public function testEventNameMustBeStringOnce($eventName)
+    public function testEventNameMustBeStringRemoveListener()
     {
-        self::expectException(TypeError::class);
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('event name must not be null');
 
-        $this->emitter->once($eventName, function () {});
+        $this->emitter->removeListener(null, function () {});
     }
 
-    /**
-     * @dataProvider provideInvalidEventNameTypes
-     */
-    public function testEventNameMustBeStringRemoveListener($eventName)
+    public function testEventNameMustBeStringEmit()
     {
-        self::expectException(TypeError::class);
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('event name must not be null');
 
-        $this->emitter->removeListener($eventName, function () {});
+        $this->emitter->emit(null);
     }
 
-    /**
-     * @dataProvider provideInvalidEventNameTypes
-     */
-    public function testEventNameMustBeStringRemoveAllListeners($eventName)
+    public function testListenersGetAll()
     {
-        if ($eventName === null) {
-            self::assertTrue(true, 'removeAllListeners accepts null as argument, no need to test against that');
+        $a = function () {};
+        $b = function () {};
+        $c = function () {};
+        $d = function () {};
 
-            return;
-        }
+        $this->emitter->once('event2', $c);
+        $this->emitter->on('event', $a);
+        $this->emitter->once('event', $b);
+        $this->emitter->on('event', $c);
+        $this->emitter->once('event', $d);
 
-        self::expectException(TypeError::class);
-
-        $this->emitter->removeAllListeners($eventName);
-    }
-
-    /**
-     * @dataProvider provideInvalidEventNameTypes
-     */
-    public function testEventNameMustBeStringListeners($eventName)
-    {
-        self::expectException(TypeError::class);
-
-        $this->emitter->listeners($eventName, function () {});
-    }
-
-    /**
-     * @dataProvider provideInvalidEventNameTypes
-     */
-    public function testEventNameMustBeStringEmit($eventName)
-    {
-        self::expectException(TypeError::class);
-
-        $this->emitter->emit($eventName);
+        self::assertSame(
+            [
+                'event' => [
+                    $a,
+                    $c,
+                    $b,
+                    $d,
+                ],
+                'event2' => [
+                    $c,
+                ],
+            ],
+            $this->emitter->listeners()
+        );
     }
 }
