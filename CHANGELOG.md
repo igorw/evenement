@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+
+* v3.0.1 (2017-07-23)
+
+  * Resolved regression introduced in once listeners in v3.0.0 [#49](https://github.com/igorw/evenement/pull/49)
+
 * v3.0.0 (2017-07-23)
 
   * Passing null as event name throw exception [#46](https://github.com/igorw/evenement/pull/46), and [#47](https://github.com/igorw/evenement/pull/47)
