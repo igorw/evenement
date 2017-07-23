@@ -417,4 +417,22 @@ class EventEmitterTest extends TestCase
             $this->emitter->listeners()
         );
     }
+
+    public function testOnceNestedCallRegression()
+    {
+        $first = 0;
+        $second = 0;
+
+        $this->emitter->once('event', function () use (&$first, &$second) {
+            $first++;
+            $this->emitter->once('event', function () use (&$second) {
+                $second++;
+            });
+            $this->emitter->emit('event');
+        });
+        $this->emitter->emit('event');
+
+        self::assertSame(1, $first);
+        self::assertSame(1, $second);
+    }
 }

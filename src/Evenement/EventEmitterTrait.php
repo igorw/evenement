@@ -125,14 +125,10 @@ trait EventEmitterTrait
         }
 
         if (isset($this->onceListeners[$event])) {
-            $keys = \array_keys($this->onceListeners[$event]);
-            foreach ($keys as $key) {
-                ($this->onceListeners[$event][$key])(...$arguments);
-                unset($this->onceListeners[$event][$key]);
-            }
-
-            if (\count($this->onceListeners[$event]) === 0) {
-                unset($this->onceListeners[$event]);
+            $listeners = $this->onceListeners[$event];
+            unset($this->onceListeners[$event]);
+            foreach ($listeners as $listener) {
+                $listener(...$arguments);
             }
         }
     }
