@@ -47,7 +47,16 @@ trait EventEmitterTrait
 
         return $this;
     }
-
+    
+    public function off($event, callable $listener = null)
+    {
+        if ($listener) {
+            return $this->removeListener($event, $listener);   
+        } else {
+            return $this->removeAllListeners($event);   
+        }
+    }
+        
     public function removeListener($event, callable $listener)
     {
         if ($event === null) {
