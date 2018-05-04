@@ -17,6 +17,7 @@ trait EventEmitterTrait
 {
     protected $listeners = [];
     protected $onceListeners = [];
+    protected $children = [];
 
     public function on($event, callable $listener)
     {
@@ -131,5 +132,15 @@ trait EventEmitterTrait
                 $listener(...$arguments);
             }
         }
+
+        foreach($this->children as $child)
+        {
+            $child->emit($event, $arguments);
+        }
+    }
+
+    public function forward(EventEmitterInterface $emitter)
+    {
+        $this->children[] = $emitter;
     }
 }

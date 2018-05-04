@@ -435,4 +435,14 @@ class EventEmitterTest extends TestCase
         self::assertSame(1, $first);
         self::assertSame(1, $second);
     }
+
+    public function testInheritance()
+    {
+        $child = new EventEmitter();
+        $this->emitter->forward($child);
+        $child->on('hello', function ($data) {
+            self::assertSame('hello from parent', $data);
+        });
+        $this->emitter->emit('hello', ['hello from parent']);
+    }
 }
