@@ -17,6 +17,9 @@ use PHPUnit\Framework\TestCase;
 
 class EventEmitterTest extends TestCase
 {
+    /**
+     * @var EventEmitter
+     */
     private $emitter;
 
     public function setUp()
@@ -444,5 +447,38 @@ class EventEmitterTest extends TestCase
             self::assertSame('hello from parent', $data);
         });
         $this->emitter->emit('hello', ['hello from parent']);
+    }
+
+    public function testOff()
+    {
+        self::assertSame([], $this->emitter->listeners());
+
+        $listener = function () {};
+        $this->emitter->on('event', $listener);
+        $this->emitter->on('tneve', $listener);
+        self::assertSame(
+            [
+                'event' => [
+                    $listener,
+                ],
+                'tneve' => [
+                    $listener,
+                ],
+            ],
+            $this->emitter->listeners()
+        );
+
+        $this->emitter->off('tneve', $listener);
+        self::assertSame(
+            [
+                'event' => [
+                    $listener,
+                ],
+            ],
+            $this->emitter->listeners()
+        );
+
+        $this->emitter->off('event');
+        self::assertSame([], $this->emitter->listeners());
     }
 }
