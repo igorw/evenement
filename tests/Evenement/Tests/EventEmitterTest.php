@@ -87,28 +87,28 @@ class EventEmitterTest extends TestCase
 
     public function testOnceBefore()
     {
-        $listenerCalled = 0;
+        $listenerCalled = [];
 
         $this->emitter->once('foo', function () use (&$listenerCalled) {
-            $this->assertSame(0, $listenerCalled);
-            $listenerCalled = 1;
+            $this->assertSame([], $listenerCalled);
+            $listenerCalled[] = 1;
         }, true);
 
         $this->emitter->on('foo', function () use (&$listenerCalled) {
-            $this->assertSame(1, $listenerCalled);
-            $listenerCalled = 2;
+            $this->assertSame([1], $listenerCalled);
+            $listenerCalled[] = 2;
         });
 
         $this->emitter->once('foo', function () use (&$listenerCalled) {
-            $this->assertSame(2, $listenerCalled);
-            $listenerCalled = 3;
+            $this->assertSame([1, 2], $listenerCalled);
+            $listenerCalled[] = 3;
         });
 
-        $this->assertSame(0, $listenerCalled);
+        $this->assertSame([], $listenerCalled);
 
         $this->emitter->emit('foo');
 
-        $this->assertSame(3, $listenerCalled);
+        $this->assertSame([1, 2, 3], $listenerCalled);
     }
 
     public function testEmitWithoutArguments()
