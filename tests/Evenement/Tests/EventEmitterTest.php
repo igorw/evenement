@@ -85,14 +85,14 @@ class EventEmitterTest extends TestCase
         $this->assertSame(array('a', 'b'), $capturedArgs);
     }
 
-    public function testOnceBefore()
+    public function testOncePre()
     {
         $listenerCalled = [];
 
-        $this->emitter->once('foo', function () use (&$listenerCalled) {
+        $this->emitter->onceBefore('foo', function () use (&$listenerCalled) {
             $this->assertSame([], $listenerCalled);
             $listenerCalled[] = 1;
-        }, true);
+        });
 
         $this->emitter->on('foo', function () use (&$listenerCalled) {
             $this->assertSame([1], $listenerCalled);

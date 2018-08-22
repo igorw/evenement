@@ -35,7 +35,22 @@ trait EventEmitterTrait
         return $this;
     }
 
-    public function once($event, callable $listener, bool $before = false)
+    public function onceBefore($event, callable $listener)
+    {
+        if ($event === null) {
+            throw new InvalidArgumentException('event name must not be null');
+        }
+
+        if (!isset($this->beforeOnceListeners[$event])) {
+            $this->beforeOnceListeners[$event] = [];
+        }
+
+        $this->beforeOnceListeners[$event][] = $listener;
+
+        return $this;
+    }
+
+    public function once($event, callable $listener)
     {
         if ($event === null) {
             throw new InvalidArgumentException('event name must not be null');
@@ -45,12 +60,7 @@ trait EventEmitterTrait
             $this->onceListeners[$event] = [];
         }
 
-
-        if ($before) {
-            $this->beforeOnceListeners[$event][] = $listener;
-        } else {
-            $this->onceListeners[$event][] = $listener;
-        }
+        $this->onceListeners[$event][] = $listener;
 
         return $this;
     }
