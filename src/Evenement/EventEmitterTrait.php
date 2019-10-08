@@ -69,6 +69,7 @@ trait EventEmitterTrait
     {
         if ($listener !== null) {
             $this->removeListener($event, $listener);
+            return;
         }
 
         $this->removeAllListeners($event);
