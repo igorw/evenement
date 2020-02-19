@@ -327,18 +327,12 @@ class EventEmitterTest extends TestCase
 
     public function testListeners()
     {
-        $onA = function () {
-        };
-        $onB = function () {
-        };
-        $onC = function () {
-        };
-        $onceA = function () {
-        };
-        $onceB = function () {
-        };
-        $onceC = function () {
-        };
+        $onA = function () {};
+        $onB = function () {};
+        $onC = function () {};
+        $onceA = function () {};
+        $onceB = function () {};
+        $onceC = function () {};
 
         self::assertCount(0, $this->emitter->listeners('event'));
         $this->emitter->on('event', $onA);
@@ -412,8 +406,7 @@ class EventEmitterTest extends TestCase
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('event name must not be null');
 
-        $this->emitter->once(null, function () {
-        });
+        $this->emitter->once(null, function () {});
     }
 
     public function testEventNameMustBeStringRemoveListener()
@@ -421,8 +414,7 @@ class EventEmitterTest extends TestCase
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('event name must not be null');
 
-        $this->emitter->removeListener(null, function () {
-        });
+        $this->emitter->removeListener(null, function () {});
     }
 
     public function testEventNameMustBeStringEmit()
@@ -435,14 +427,10 @@ class EventEmitterTest extends TestCase
 
     public function testListenersGetAll()
     {
-        $a = function () {
-        };
-        $b = function () {
-        };
-        $c = function () {
-        };
-        $d = function () {
-        };
+        $a = function () {};
+        $b = function () {};
+        $c = function () {};
+        $d = function () {};
 
         $this->emitter->once('event2', $c);
         $this->emitter->on('event', $a);
@@ -526,36 +514,5 @@ class EventEmitterTest extends TestCase
 
         $this->emitter->off('event');
         self::assertSame([], $this->emitter->listeners());
-    }
-
-    public function testA()
-    {
-        $emitter = new EventEmitter();
-
-
-        $emitter->on('A', function () use (&$emitter) {
-            print("Original A call\n");
-
-            $emitter->on('A', function () {
-                    print("Nested A call\n");
-                })
-                ->once('A', function () {
-                    print("Nested A ONCE call\n");
-                });
-        });
-
-
-        /*
-        $emitter->on('A', function () {
-            print("Nested A call\n");
-        })
-            ->once('A', function () {
-                print("Nested A ONCE call\n");
-            });
-        */
-
-        $emitter->emit('A');
-
-        $this->assertEquals(1, 1);
     }
 }
