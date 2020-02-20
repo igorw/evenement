@@ -507,4 +507,33 @@ class EventEmitterTest extends TestCase
         $this->emitter->off('event');
         self::assertSame([], $this->emitter->listeners());
     }
+
+    public function testNestedOn()
+    {
+        $emitter = $this->emitter;
+
+        $first = 0;
+        $second = 0;
+        $third = 0;
+
+        $emitter->on('event', function () use (&$emitter, &$first, &$second, &$third) {
+            $first++;
+
+            $emitter->on('event', function () use (&$second, &$third) {
+                $second++;
+            })
+                ->once('event', function () use (&$third) {
+                    $third++;
+                });
+        });
+
+        $emitter->emit('event');
+        $this->assertEquals(1, $first);
+        $this->assertEquals(0, $second);
+        $this->assertEquals(0, $third);
+        $emitter->emit('event');
+        $this->assertEquals(2, $first);
+        $this->assertEquals(1, $second);
+        $this->assertEquals(1, $third);
+    }
 }
