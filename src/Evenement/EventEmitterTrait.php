@@ -163,24 +163,37 @@ trait EventEmitterTrait
             throw new InvalidArgumentException('event name must not be null');
         }
 
+        $beforeOnceListeners = [];
         if (isset($this->beforeOnceListeners[$event])) {
-            $listeners = $this->beforeOnceListeners[$event];
-            unset($this->beforeOnceListeners[$event]);
-            foreach ($listeners as $listener) {
-                $listener(...$arguments);
-            }
+            $beforeOnceListeners = array_values($this->beforeOnceListeners[$event]);
         }
 
+        $listeners = [];
         if (isset($this->listeners[$event])) {
-            foreach ($this->listeners[$event] as $listener) {
+            $listeners = array_values($this->listeners[$event]);
+        }
+
+        $onceListeners = [];
+        if (isset($this->onceListeners[$event])) {
+            $onceListeners = array_values($this->onceListeners[$event]);
+        }
+
+        if(empty($beforeOnceListeners) === false) {
+            unset($this->beforeOnceListeners[$event]);
+            foreach ($beforeOnceListeners as $listener) {
                 $listener(...$arguments);
             }
         }
 
-        if (isset($this->onceListeners[$event])) {
-            $listeners = $this->onceListeners[$event];
-            unset($this->onceListeners[$event]);
+        if(empty($listeners) === false) {
             foreach ($listeners as $listener) {
+                $listener(...$arguments);
+            }
+        }
+
+        if(empty($onceListeners) === false) {
+            unset($this->onceListeners[$event]);
+            foreach ($onceListeners as $listener) {
                 $listener(...$arguments);
             }
         }
