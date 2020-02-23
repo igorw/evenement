@@ -30,17 +30,23 @@ class EventEmitterTest extends TestCase
     public function testAddListenerWithLambda()
     {
         $this->emitter->on('foo', function () {});
+
+        $this->assertEquals(1, count($this->emitter->listeners('foo')));
     }
 
     public function testAddListenerWithMethod()
     {
         $listener = new Listener();
         $this->emitter->on('foo', [$listener, 'onFoo']);
+
+        $this->assertEquals(1, count($this->emitter->listeners('foo')));
     }
 
     public function testAddListenerWithStaticMethod()
     {
         $this->emitter->on('bar', ['Evenement\Tests\Listener', 'onBar']);
+
+        $this->assertEquals(1, count($this->emitter->listeners('bar')));
     }
 
     public function testAddListenerWithInvalidListener()
@@ -391,7 +397,8 @@ class EventEmitterTest extends TestCase
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('event name must not be null');
 
-        $this->emitter->on(null, function () {});
+        $this->emitter->on(null, function () {
+        });
     }
 
     public function testEventNameMustBeStringOnce()
@@ -479,7 +486,8 @@ class EventEmitterTest extends TestCase
     {
         self::assertSame([], $this->emitter->listeners());
 
-        $listener = function () {};
+        $listener = function () {
+        };
         $this->emitter->on('event', $listener);
         $this->emitter->on('tneve', $listener);
         self::assertSame(
