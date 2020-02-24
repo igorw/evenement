@@ -1,6 +1,6 @@
 # Introduction
 
-Événement is is French and means "event". The événement library aims to
+Événement is French and means "event". The événement library aims to
 provide a simple way of subscribing to events and notifying those subscribers
 whenever an event occurs.
 
