@@ -80,6 +80,10 @@ if (0 === count($emitter->listeners('error'))) {
 }
 ```
 
+## off
+
+TODO
+
 ## removeListener($event, callable $listener)
 
 Remove a specific listener for a specific event.
