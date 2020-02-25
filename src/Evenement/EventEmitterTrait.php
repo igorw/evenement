@@ -23,7 +23,7 @@ trait EventEmitterTrait
     public function on($event, callable $listener)
     {
         if ($event === null) {
-            throw new InvalidArgumentException('event name must not be null');
+            throw new \InvalidArgumentException('event name must not be null');
         }
 
         if (!isset($this->listeners[$event])) {
@@ -38,7 +38,7 @@ trait EventEmitterTrait
     public function onceBefore($event, callable $listener)
     {
         if ($event === null) {
-            throw new InvalidArgumentException('event name must not be null');
+            throw new \InvalidArgumentException('event name must not be null');
         }
 
         if (!isset($this->beforeOnceListeners[$event])) {
@@ -53,7 +53,7 @@ trait EventEmitterTrait
     public function once($event, callable $listener)
     {
         if ($event === null) {
-            throw new InvalidArgumentException('event name must not be null');
+            throw new \InvalidArgumentException('event name must not be null');
         }
 
         if (!isset($this->onceListeners[$event])) {
@@ -78,7 +78,7 @@ trait EventEmitterTrait
     public function removeListener($event, callable $listener)
     {
         if ($event === null) {
-            throw new InvalidArgumentException('event name must not be null');
+            throw new \InvalidArgumentException('event name must not be null');
         }
 
         if (isset($this->listeners[$event])) {
@@ -160,22 +160,22 @@ trait EventEmitterTrait
     public function emit($event, array $arguments = [])
     {
         if ($event === null) {
-            throw new InvalidArgumentException('event name must not be null');
+            throw new \InvalidArgumentException('event name must not be null');
         }
 
         $beforeOnceListeners = [];
         if (isset($this->beforeOnceListeners[$event])) {
-            $beforeOnceListeners = array_values($this->beforeOnceListeners[$event]);
+            $beforeOnceListeners = \array_values($this->beforeOnceListeners[$event]);
         }
 
         $listeners = [];
         if (isset($this->listeners[$event])) {
-            $listeners = array_values($this->listeners[$event]);
+            $listeners = \array_values($this->listeners[$event]);
         }
 
         $onceListeners = [];
         if (isset($this->onceListeners[$event])) {
-            $onceListeners = array_values($this->onceListeners[$event]);
+            $onceListeners = \array_values($this->onceListeners[$event]);
         }
 
         if(empty($beforeOnceListeners) === false) {
