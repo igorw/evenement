@@ -108,3 +108,7 @@ $emitter->once('event3', function () {});
 
 $result = $emitter->eventNames() //$result  == ['event1', 'event2', 'event3'] 
 ```
+
+## forward(EventEmitterInterface $emitter)
+
+todo
