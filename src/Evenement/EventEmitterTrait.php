@@ -75,7 +75,8 @@ trait EventEmitterTrait
         $this->removeAllListeners($event);
     }
 
-    public function eventNames() {
+    public function eventNames(): array
+    {
         return \array_unique(
             \array_merge(\array_keys($this->listeners), \array_keys($this->onceListeners), \array_keys($this->beforeOnceListeners))
         );
