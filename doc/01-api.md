@@ -91,11 +91,11 @@ is useful for long-running processes, where you want to remove listeners in
 order to allow them to get garbage collected.
 
 
-## off
+## off($event, callable $listener = null)
 
-TODO
+todo
 
-## eventNames
+## eventNames()
 
 Allows you to get all names to added event.
 
