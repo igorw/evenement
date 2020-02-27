@@ -75,6 +75,13 @@ trait EventEmitterTrait
         $this->removeAllListeners($event);
     }
 
+    public function eventNames(): array
+    {
+        return \array_unique(
+            \array_merge(\array_keys($this->listeners), \array_keys($this->onceListeners), \array_keys($this->beforeOnceListeners))
+        );
+    }
+
     public function removeListener($event, callable $listener)
     {
         if ($event === null) {
@@ -137,9 +144,7 @@ trait EventEmitterTrait
     {
         if ($event === null) {
             $events = [];
-            $eventNames = \array_unique(
-                \array_merge(\array_keys($this->listeners), \array_keys($this->onceListeners), \array_keys($this->beforeOnceListeners))
-            );
+            $eventNames = $this->eventNames();
             foreach ($eventNames as $eventName) {
                 $events[$eventName] = \array_merge(
                     isset($this->listeners[$eventName]) ? $this->listeners[$eventName] : [],

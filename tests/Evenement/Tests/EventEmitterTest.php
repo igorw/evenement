@@ -544,4 +544,15 @@ class EventEmitterTest extends TestCase
         $this->assertEquals(1, $second);
         $this->assertEquals(1, $third);
     }
+
+    public function testEventNames()
+    {
+        $emitter = $this->emitter;
+
+        $emitter->on('event1', function () {});
+        $emitter->on('event2', function () {});
+        $emitter->once('event3', function () {});
+
+        $this->assertEquals(['event1', 'event2', 'event3'], $emitter->eventNames());
+    }
 }

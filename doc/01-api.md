@@ -80,10 +80,6 @@ if (0 === count($emitter->listeners('error'))) {
 }
 ```
 
-## off
-
-TODO
-
 ## removeListener($event, callable $listener)
 
 Remove a specific listener for a specific event.
@@ -93,3 +89,26 @@ Remove a specific listener for a specific event.
 Remove all listeners for a specific event or all listeners all together. This
 is useful for long-running processes, where you want to remove listeners in
 order to allow them to get garbage collected.
+
+
+## off($event, callable $listener = null)
+
+todo
+
+## eventNames()
+
+Allows you to get all names to added event.
+
+Example:
+
+```php
+$emitter->on('event1', function () {});
+$emitter->on('event2', function () {});
+$emitter->once('event3', function () {});
+
+$result = $emitter->eventNames() //$result  == ['event1', 'event2', 'event3'] 
+```
+
+## forward(EventEmitterInterface $emitter)
+
+todo
