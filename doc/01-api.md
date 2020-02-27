@@ -93,7 +93,8 @@ order to allow them to get garbage collected.
 
 ## off($event, callable $listener = null)
 
-todo
+Executes removeAllListeners($event = null) if $listener is null, otherwise 
+execute removeListener($event, callable $listener)
 
 ## eventNames()
 
