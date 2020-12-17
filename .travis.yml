@@ -1,5 +1,7 @@
 language: php
-
+arch:
+  - amd64
+  - ppc64le
 php:
   - 7.0
   - 7.1
