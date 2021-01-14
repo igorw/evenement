@@ -22,7 +22,7 @@ class EventEmitterTest extends TestCase
      */
     private $emitter;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->emitter = new EventEmitter();
     }
