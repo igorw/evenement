@@ -1,0 +1,55 @@
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  supported-versions-matrix:
+    name: Supported Versions Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.supported-versions-matrix.outputs.version }}
+    steps:
+      - uses: actions/checkout@v1
+      - id: supported-versions-matrix
+        uses: WyriHaximus/github-action-composer-php-versions-in-range@v1
+  test:
+    name: Run Tests and Code Quality on PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    needs:
+      - supported-versions-matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ${{ fromJson(needs.supported-versions-matrix.outputs.version) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup PHP, extensions and composer with shivammathur/setup-php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, ctype, iconv, bcmath, filter, json
+          coverage: xdebug, pcov
+          tools: composer:v1
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Get composer action hash
+        id: composer-action-hash
+        run: printf "::set-output name=hash::%s" $(echo -n "${{ matrix.composer }}" | sha512sum)
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-${{ steps.composer-action-hash.outputs.hash }}
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
+      - name: Test
+        run: |
+          ./vendor/bin/phpunit --coverage-text
+          php -n examples/benchmark-emit-no-arguments.php
+          php -n examples/benchmark-emit-one-argument.php
+          php -n examples/benchmark-emit.php
+          php -n examples/benchmark-emit-once.php
+          php -n examples/benchmark-remove-listener-once.php
