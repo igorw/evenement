@@ -3,10 +3,10 @@
 Événement is a very simple event dispatching library for PHP.
 
 It has the same design goals as [Silex](https://silex.symfony.com/) and
-[Pimple](https://pimple.symfony.com/), to empower the user while staying concise
+[Pimple](https://github.com/silexphp/Pimple), to empower the user while staying concise
 and simple.
 
-It is very strongly inspired by the EventEmitter API found in
+It is very strongly inspired by the [EventEmitter](https://nodejs.org/api/events.html#events_class_eventemitter) API found in
 [node.js](http://nodejs.org).
 
 [![Build Status](https://secure.travis-ci.org/igorw/evenement.png?branch=master)](http://travis-ci.org/igorw/evenement)
