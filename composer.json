@@ -16,14 +16,14 @@
         "phpunit/phpunit": "^9 || ^6"
     },
     "autoload": {
-        "psr-0": {
-            "Evenement": "src"
+        "psr-4": {
+            "Evenement\\": "src/"
         }
     },
     "autoload-dev": {
-        "psr-0": {
-            "Evenement": "tests"
+        "psr-4": {
+            "Evenement\\Tests\\": "tests/"
         },
-        "files": ["tests/Evenement/Tests/functions.php"]
+        "files": ["tests/functions.php"]
     }
 }
