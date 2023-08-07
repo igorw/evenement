@@ -9,44 +9,16 @@ and simple.
 It is very strongly inspired by the [EventEmitter](https://nodejs.org/api/events.html#events_class_eventemitter) API found in
 [node.js](http://nodejs.org).
 
-[![Build Status](https://secure.travis-ci.org/igorw/evenement.png?branch=master)](http://travis-ci.org/igorw/evenement)
+![Continuous Integration](https://github.com/igorw/evenement/workflows/CI/badge.svg)
+[![Latest Stable Version](https://poser.pugx.org/evenement/evenement/v/stable.png)](https://packagist.org/packages/evenement/evenement)
+[![Total Downloads](https://poser.pugx.org/evenement/evenement/downloads.png)](https://packagist.org/packages/evenement/evenement/stats)
+[![License](https://poser.pugx.org/evenement/evenement/license.png)](https://packagist.org/packages/evenement/evenement)
 
 ## Fetch
 
-The recommended way to install Événement is [through composer](http://getcomposer.org).
+The recommended way to install Événement is [through composer](http://getcomposer.org). By running the following command:
 
-Just create a composer.json file for your project:
-
-```JSON
-{
-    "require": {
-        "evenement/evenement": "^3.0 || ^2.0"
-    }
-}
-```
-
-**Note:** The `3.x` version of Événement requires PHP 7 and the `2.x` version requires PHP 5.4. If you are
-using PHP 5.3, please use the `1.x` version:
-
-```JSON
-{
-    "require": {
-        "evenement/evenement": "^1.0"
-    }
-}
-```
-
-And run these two commands to install it:
-
-    $ curl -s http://getcomposer.org/installer | php
-    $ php composer.phar install
-
-Now you can add the autoloader, and you will have access to the library:
-
-```php
-<?php
-require 'vendor/autoload.php';
-```
+    $ composer require evenement/evenement
 
 ## Usage
 
