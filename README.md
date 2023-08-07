@@ -42,7 +42,7 @@ $emitter->on('user.created', function (User $user) use ($logger) {
 
 ```php
 <?php
-$emitter->off('user.created', function (User $user) use ($logger) {
+$emitter->removeListener('user.created', function (User $user) use ($logger) {
     $logger->log(sprintf("User '%s' was created.", $user->getLogin()));
 });
 ```

@@ -22,7 +22,10 @@ class EventEmitterTest extends TestCase
      */
     private $emitter;
 
-    public function setUp(): void
+    /**
+     * @before
+     */
+    public function setUpEmitter()
     {
         $this->emitter = new EventEmitter();
     }
@@ -89,32 +92,6 @@ class EventEmitterTest extends TestCase
         $this->emitter->emit('foo', array('a', 'b'));
 
         $this->assertSame(array('a', 'b'), $capturedArgs);
-    }
-
-    public function testOncePre()
-    {
-        $listenerCalled = [];
-
-        $this->emitter->onceBefore('foo', function () use (&$listenerCalled) {
-            $this->assertSame([], $listenerCalled);
-            $listenerCalled[] = 1;
-        });
-
-        $this->emitter->on('foo', function () use (&$listenerCalled) {
-            $this->assertSame([1], $listenerCalled);
-            $listenerCalled[] = 2;
-        });
-
-        $this->emitter->once('foo', function () use (&$listenerCalled) {
-            $this->assertSame([1, 2], $listenerCalled);
-            $listenerCalled[] = 3;
-        });
-
-        $this->assertSame([], $listenerCalled);
-
-        $this->emitter->emit('foo');
-
-        $this->assertSame([1, 2, 3], $listenerCalled);
     }
 
     public function testEmitWithoutArguments()
@@ -472,50 +449,6 @@ class EventEmitterTest extends TestCase
         self::assertSame(1, $second);
     }
 
-    public function testInheritance()
-    {
-        $child = new EventEmitter();
-        $this->emitter->forward($child);
-        $child->on('hello', function ($data) {
-            self::assertSame('hello from parent', $data);
-        });
-        $this->emitter->emit('hello', ['hello from parent']);
-    }
-
-    public function testOff()
-    {
-        self::assertSame([], $this->emitter->listeners());
-
-        $listener = function () {
-        };
-        $this->emitter->on('event', $listener);
-        $this->emitter->on('tneve', $listener);
-        self::assertSame(
-            [
-                'event' => [
-                    $listener,
-                ],
-                'tneve' => [
-                    $listener,
-                ],
-            ],
-            $this->emitter->listeners()
-        );
-
-        $this->emitter->off('tneve', $listener);
-        self::assertSame(
-            [
-                'event' => [
-                    $listener,
-                ],
-            ],
-            $this->emitter->listeners()
-        );
-
-        $this->emitter->off('event');
-        self::assertSame([], $this->emitter->listeners());
-    }
-
     public function testNestedOn()
     {
         $emitter = $this->emitter;
@@ -543,16 +476,5 @@ class EventEmitterTest extends TestCase
         $this->assertEquals(2, $first);
         $this->assertEquals(1, $second);
         $this->assertEquals(1, $third);
-    }
-
-    public function testEventNames()
-    {
-        $emitter = $this->emitter;
-
-        $emitter->on('event1', function () {});
-        $emitter->on('event2', function () {});
-        $emitter->once('event3', function () {});
-
-        $this->assertEquals(['event1', 'event2', 'event3'], $emitter->eventNames());
     }
 }
