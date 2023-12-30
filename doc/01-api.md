@@ -73,15 +73,15 @@ Emit an event, which will call all listeners by regular expression.
 Example:
 
 ```php
-$events->on('note_a1',  function($channel, $volacity) {
+$events->on('note_a1',  function($channel, $velocity) {
     echo "paying note a1\n";
 });
 
-$events->on('note_a2', function($channel, $volacity) {
+$events->on('note_a2', function($channel, $velocity) {
     echo "paying note a2\n";
 });
 
-$events->on('note_b2', function($channel, $volacity) {
+$events->on('note_b2', function($channel, $velocity) {
     echo "paying note b2\n";
 });
 
