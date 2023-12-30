@@ -138,7 +138,7 @@ trait EventEmitterTrait
             $onceListeners = array_values($this->onceListeners[$event]);
         }
 
-        if(empty($listeners) === false) {
+        if(empty($listeners) === false) {          
             foreach ($listeners as $listener) {
                 $listener(...$arguments);
             }
@@ -151,4 +151,30 @@ trait EventEmitterTrait
             }
         }
     }
+
+    public function emit_regex($pattern, array $arguments = [])
+    {
+        if ($pattern === null) {
+            throw new InvalidArgumentException('event name must not be null');
+        }
+
+        $listeners = [];
+        foreach($this->listeners as $_event => $_listeners) {
+            if(preg_match($pattern, $_event, $matches)) {
+                foreach ($_listeners as $listener) {
+                    $listener(...$arguments);
+                }                
+            }
+        }
+
+        $onceListeners = [];
+        foreach($this->onceListeners as $_event => $_listeners) {
+            if(preg_match($pattern, $_event, $matches)) {
+                unset($this->onceListeners[$_event]);
+                foreach ($_listeners as $listener) {
+                    $listener(...$arguments);
+                }                
+            }
+        }
+    }    
 }
