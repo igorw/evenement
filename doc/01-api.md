@@ -66,6 +66,28 @@ $result = $a + $b;
 $emitter->emit('numbers_added', [$result, $a, $b]);
 ```
 
+## emit_regex($pattern, array $arguments = [])
+
+Emit an event, which will call all listeners by regular expression.
+
+Example:
+
+```php
+$events->on('note_a1',  function($channel, $velocity) {
+    echo "paying note a1\n";
+});
+
+$events->on('note_a2', function($channel, $velocity) {
+    echo "paying note a2\n";
+});
+
+$events->on('note_b2', function($channel, $velocity) {
+    echo "paying note b2\n";
+});
+
+$events->emit_regex("/note_a/i", [0, 127]);
+```
+
 ## listeners($event)
 
 Allows you to inspect the listeners attached to an event. Particularly useful
