@@ -1,7 +1,6 @@
 CHANGELOG
 =========
 
-
 * v3.0.1 (2017-07-23)
 
   * Resolved regression introduced in once listeners in v3.0.0 [#49](https://github.com/igorw/evenement/pull/49)

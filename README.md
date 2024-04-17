@@ -18,7 +18,9 @@ It is very strongly inspired by the [EventEmitter](https://nodejs.org/api/events
 
 The recommended way to install Événement is [through composer](http://getcomposer.org). By running the following command:
 
+```bash
     $ composer require evenement/evenement
+```
 
 ## Usage
 
@@ -33,7 +35,7 @@ $emitter = new Evenement\EventEmitter();
 
 ```php
 <?php
-$emitter->on('user.created', function (User $user) use ($logger) {
+$emitter->on('user.created', static function (User $user) use ($logger): void {
     $logger->log(sprintf("User '%s' was created.", $user->getLogin()));
 });
 ```
@@ -42,7 +44,7 @@ $emitter->on('user.created', function (User $user) use ($logger) {
 
 ```php
 <?php
-$emitter->removeListener('user.created', function (User $user) use ($logger) {
+$emitter->removeListener('user.created', static function (User $user) use ($logger): void {
     $logger->log(sprintf("User '%s' was created.", $user->getLogin()));
 });
 ```
@@ -56,8 +58,9 @@ $emitter->emit('user.created', [$user]);
 
 Tests
 -----
-
+```bash
     $ ./vendor/bin/phpunit
+```
 
 License
 -------
