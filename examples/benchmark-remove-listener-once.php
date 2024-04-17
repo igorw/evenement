@@ -21,7 +21,7 @@ $emitter = new EventEmitter();
 
 $listeners = [];
 for ($i = 0; $i < ITERATIONS; $i++) {
-    $listeners[] = function ($a, $b, $c) {};
+    $listeners[] = static function (int $a, int $b, int $c): void {};
 }
 
 $start = microtime(true);

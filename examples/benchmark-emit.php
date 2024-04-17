@@ -17,7 +17,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 $emitter = new EventEmitter();
 
-$emitter->on('event', function ($a, $b, $c) {});
+$emitter->on('event', static function (int $a, int $b, int $c): void {});
 
 $start = microtime(true);
 for ($i = 0; $i < ITERATIONS; $i++) {
