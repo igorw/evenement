@@ -16,18 +16,18 @@ interface EventEmitterInterface
     /**
      * Allows you to subscribe to an event.
      */
-    public function on(?string $event, callable $listener): static;
+    public function on(string $event, callable $listener): static;
 
     /**
      * Convenience method that adds a listener which is guaranteed to only be
      * called once.
      */
-    public function once(?string $event, callable $listener): static;
+    public function once(string $event, callable $listener): static;
 
     /**
      * Remove a specific listener for a specific event.
      */
-    public function removeListener(?string $event, callable $listener): void;
+    public function removeListener(string $event, callable $listener): void;
 
     /**
      * Remove all listeners for a specific event or all listeners all together.
@@ -46,5 +46,5 @@ interface EventEmitterInterface
     /**
      * Emit an event, which will call all listeners.
      */
-    public function emit(?string $event, array $arguments = []): void;
+    public function emit(string $event, array $arguments = []): void;
 }

@@ -380,33 +380,33 @@ class EventEmitterTest extends TestCase
     public function testEventNameMustBeStringOn(): void
     {
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('event name must not be null');
+        self::expectExceptionMessage('event name must not be an empty string');
 
-        $this->emitter->on(null, static function (): void {});
+        $this->emitter->on('', static function (): void {});
     }
 
     public function testEventNameMustBeStringOnce(): void
     {
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('event name must not be null');
+        self::expectExceptionMessage('event name must not be an empty string');
 
-        $this->emitter->once(null, static function (): void {});
+        $this->emitter->once('', static function (): void {});
     }
 
     public function testEventNameMustBeStringRemoveListener(): void
     {
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('event name must not be null');
+        self::expectExceptionMessage('event name must not be an empty string');
 
-        $this->emitter->removeListener(null, static function (): void {});
+        $this->emitter->removeListener('', static function (): void {});
     }
 
     public function testEventNameMustBeStringEmit(): void
     {
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('event name must not be null');
+        self::expectExceptionMessage('event name must not be an empty string');
 
-        $this->emitter->emit(null);
+        $this->emitter->emit('');
     }
 
     public function testListenersGetAll(): void

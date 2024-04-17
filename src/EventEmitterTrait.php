@@ -31,10 +31,10 @@ trait EventEmitterTrait
      */
     protected array $onceListeners = [];
 
-    public function on(?string $event, callable $listener): static
+    public function on(string $event, callable $listener): static
     {
-        if ($event === null) {
-            throw new InvalidArgumentException('event name must not be null');
+        if ($event === '') {
+            throw new InvalidArgumentException('event name must not be an empty string');
         }
 
         if (!isset($this->listeners[$event])) {
@@ -46,10 +46,10 @@ trait EventEmitterTrait
         return $this;
     }
 
-    public function once(?string $event, callable $listener): static
+    public function once(string $event, callable $listener): static
     {
-        if ($event === null) {
-            throw new InvalidArgumentException('event name must not be null');
+        if ($event === '') {
+            throw new InvalidArgumentException('event name must not be an empty string');
         }
 
         if (!isset($this->onceListeners[$event])) {
@@ -61,10 +61,10 @@ trait EventEmitterTrait
         return $this;
     }
 
-    public function removeListener(?string $event, callable $listener): void
+    public function removeListener(string $event, callable $listener): void
     {
-        if ($event === null) {
-            throw new InvalidArgumentException('event name must not be null');
+        if ($event === '') {
+            throw new InvalidArgumentException('event name must not be an empty string');
         }
 
         if (isset($this->listeners[$event])) {
@@ -139,10 +139,10 @@ trait EventEmitterTrait
 	/**
 	 * @param array<mixed> $arguments
 	 */
-    public function emit(?string $event, array $arguments = []): void
+    public function emit(string $event, array $arguments = []): void
     {
-        if ($event === null) {
-            throw new InvalidArgumentException('event name must not be null');
+        if ($event === '') {
+            throw new InvalidArgumentException('event name must not be an empty string');
         }
 
         $listeners = [];
