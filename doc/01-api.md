@@ -6,7 +6,7 @@ define an interface that extends the emitter and implicitly defines certain
 events to be emitted, or if you want to type hint an `EventEmitter` to be
 passed to a method without coupling to the specific implementation.
 
-## on(?string $event, callable $listener): static;
+## on(string $event, callable $listener): static;
 
 Allows you to subscribe to an event.
 
@@ -35,7 +35,7 @@ You can also accept more than one parameter for the listener:
 $emitter->on('numbers_added', static function (int $result, int $a, int $b): void {});
 ```
 
-## once(?string $event, callable $listener): static;
+## once(string $event, callable $listener): static;
 
 Convenience method that adds a listener which is guaranteed to only be called
 once.
@@ -48,7 +48,7 @@ $conn->once('connected', static function () use ($conn, $data): void {
 });
 ```
 
-## emit(?string $event, array $arguments = []): void;
+## emit(string $event, array $arguments = []): void;
 
 Emit an event, which will call all listeners.
 
@@ -66,7 +66,7 @@ $result = $a + $b;
 $emitter->emit('numbers_added', [$result, $a, $b]);
 ```
 
-## listeners(?string $event): array;
+## listeners(?string $event = null): array;
 
 Allows you to inspect the listeners attached to an event. Particularly useful
 to check if there are any listeners at all.
@@ -80,7 +80,7 @@ if (0 === \count($emitter->listeners('error'))) {
 }
 ```
 
-## removeListener(?string $event, callable $listener): void;
+## removeListener(string $event, callable $listener): void;
 
 Remove a specific listener for a specific event.
 
