@@ -13,38 +13,56 @@ namespace Evenement\Tests;
 
 class Listener
 {
-    private $data = [];
+    /**
+     * @var list<string>
+     */
+    private array $data = [];
 
-    private $magicData = [];
+    /**
+     * @var list<string>
+     */
+    private array $magicData = [];
 
-    private static $staticData = [];
+    /**
+     * @var list<string>
+     */
+    private static array $staticData = [];
 
-    public function onFoo($data)
+    public function onFoo(string $data): void
     {
         $this->data[] = $data;
     }
 
-    public function __invoke($data)
+    public function __invoke(string $data): void
     {
         $this->magicData[] = $data;
     }
 
-    public static function onBar($data)
+    public static function onBar(string $data): void
     {
         self::$staticData[] = $data;
     }
 
-    public function getData()
+    /**
+     * @return list<string>
+     */
+    public function getData(): array
     {
         return $this->data;
     }
 
-    public function getMagicData()
+    /**
+     * @return list<string>
+     */
+    public function getMagicData(): array
     {
         return $this->magicData;
     }
 
-    public static function getStaticData()
+    /**
+     * @return list<string>
+     */
+    public static function getStaticData(): array
     {
         return self::$staticData;
     }
