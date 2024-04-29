@@ -95,14 +95,9 @@ trait EventEmitterTrait
     public function removeAllListeners(?string $event = null): void
     {
         if ($event !== null) {
-            unset($this->listeners[$event]);
+            unset($this->listeners[$event], $this->onceListeners[$event]);
         } else {
             $this->listeners = [];
-        }
-
-        if ($event !== null) {
-            unset($this->onceListeners[$event]);
-        } else {
             $this->onceListeners = [];
         }
     }
