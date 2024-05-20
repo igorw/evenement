@@ -28,31 +28,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup PHP, extensions and composer with shivammathur/setup-php
+      - name: Setup PHP and extensions with shivammathur/setup-php
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, ctype, iconv, bcmath, filter, json
           coverage: xdebug, pcov
-          tools: composer:v2
 
-      - name: Get composer cache directory
-        id: composer-cache
-        run: |
-          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
+      - name: Setup Composer, install dependencies
+        uses: ramsey/composer-install@v3
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            composer-${{ runner.os }}-${{ matrix.php }}
-            composer-${{ runner.os }}-
-            composer-
-
-      - name: Install Composer dependencies
-        run: composer install --no-progress --no-interaction --optimize-autoloader --ansi
+           composer-options: "--optimize-autoloader"
 
       - name: Test
         run: |

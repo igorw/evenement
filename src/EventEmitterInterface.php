@@ -40,11 +40,15 @@ interface EventEmitterInterface
     /**
      * Allows you to inspect the listeners attached to an event. Particularly useful
      * to check if there are any listeners at all.
+     *
+     * @return array<string, array<int, (callable)>>|list<(callable)>
      */
     public function listeners(?string $event = null): array;
 
     /**
      * Emit an event, which will call all listeners.
+     *
+     * @param array<mixed> $arguments
      */
     public function emit(string $event, array $arguments = []): void;
 }

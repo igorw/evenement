@@ -21,13 +21,8 @@ use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(EventEmitter::class)]
-#[BackupGlobals(false)]
-#[BackupStaticProperties(false)]
 class EventEmitterTest extends TestCase
 {
-    /**
-     * @var EventEmitter
-     */
     private EventEmitter $emitter;
 
     #[Before]
@@ -40,7 +35,7 @@ class EventEmitterTest extends TestCase
     {
         $this->emitter->on('foo', static function (): void {});
 
-        $this->assertCount(1, $this->emitter->listeners('foo'));
+        self::assertCount(1, $this->emitter->listeners('foo'));
     }
 
     public function testAddListenerWithMethod(): void
@@ -48,14 +43,14 @@ class EventEmitterTest extends TestCase
         $listener = new Listener();
         $this->emitter->on('foo', [$listener, 'onFoo']);
 
-        $this->assertCount(1, $this->emitter->listeners('foo'));
+        self::assertCount(1, $this->emitter->listeners('foo'));
     }
 
     public function testAddListenerWithStaticMethod(): void
     {
         $this->emitter->on('bar', ['Evenement\Tests\Listener', 'onBar']);
 
-        $this->assertCount(1, $this->emitter->listeners('bar'));
+        self::assertCount(1, $this->emitter->listeners('bar'));
     }
 
     public function testAddListenerWithInvalidListener(): void
@@ -72,15 +67,15 @@ class EventEmitterTest extends TestCase
             $listenerCalled++;
         });
 
-        $this->assertSame(0, $listenerCalled);
+        self::assertSame(0, $listenerCalled);
 
         $this->emitter->emit('foo');
 
-        $this->assertSame(1, $listenerCalled);
+        self::assertSame(1, $listenerCalled);
 
         $this->emitter->emit('foo');
 
-        $this->assertSame(1, $listenerCalled);
+        self::assertSame(1, $listenerCalled);
     }
 
     public function testOnceWithArguments(): void
@@ -93,7 +88,7 @@ class EventEmitterTest extends TestCase
 
         $this->emitter->emit('foo', ['a', 'b']);
 
-        $this->assertSame(['a', 'b'], $capturedArgs);
+        self::assertSame(['a', 'b'], $capturedArgs);
     }
 
     public function testEmitWithoutArguments(): void
@@ -104,44 +99,40 @@ class EventEmitterTest extends TestCase
             $listenerCalled = true;
         });
 
-        $this->assertSame(false, $listenerCalled);
+        self::assertFalse($listenerCalled);
         $this->emitter->emit('foo');
-        $this->assertSame(true, $listenerCalled);
+        self::assertTrue($listenerCalled);
     }
 
     public function testEmitWithOneArgument(): void
     {
-        $test = $this;
-
         $listenerCalled = false;
 
-        $this->emitter->on('foo', static function (string $value) use (&$listenerCalled, $test): void {
+        $this->emitter->on('foo', static function (string $value) use (&$listenerCalled): void {
             $listenerCalled = true;
 
-            $test->assertSame('bar', $value);
+            self::assertSame('bar', $value);
         });
 
-        $this->assertSame(false, $listenerCalled);
+        self::assertFalse($listenerCalled);
         $this->emitter->emit('foo', ['bar']);
-        $this->assertSame(true, $listenerCalled);
+        self::assertTrue($listenerCalled);
     }
 
     public function testEmitWithTwoArguments(): void
     {
-        $test = $this;
-
         $listenerCalled = false;
 
-        $this->emitter->on('foo', static function (string $arg1, string $arg2) use (&$listenerCalled, $test): void {
+        $this->emitter->on('foo', static function (string $arg1, string $arg2) use (&$listenerCalled): void {
             $listenerCalled = true;
 
-            $test->assertSame('bar', $arg1);
-            $test->assertSame('baz', $arg2);
+            self::assertSame('bar', $arg1);
+            self::assertSame('baz', $arg2);
         });
 
-        $this->assertSame(false, $listenerCalled);
+        self::assertFalse($listenerCalled);
         $this->emitter->emit('foo', ['bar', 'baz']);
-        $this->assertSame(true, $listenerCalled);
+        self::assertTrue($listenerCalled);
     }
 
     #[DoesNotPerformAssertions]
@@ -164,9 +155,9 @@ class EventEmitterTest extends TestCase
             $listenersCalled++;
         });
 
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
-        $this->assertSame(2, $listenersCalled);
+        self::assertSame(2, $listenersCalled);
     }
 
     public function testRemoveListenerMatching(): void
@@ -180,9 +171,9 @@ class EventEmitterTest extends TestCase
         $this->emitter->on('foo', $listener);
         $this->emitter->removeListener('foo', $listener);
 
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
     }
 
     public function testRemoveListenerNotMatching(): void
@@ -196,9 +187,9 @@ class EventEmitterTest extends TestCase
         $this->emitter->on('foo', $listener);
         $this->emitter->removeListener('bar', $listener);
 
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
-        $this->assertSame(1, $listenersCalled);
+        self::assertSame(1, $listenersCalled);
     }
 
     public function testRemoveAllListenersMatching(): void
@@ -211,9 +202,9 @@ class EventEmitterTest extends TestCase
 
         $this->emitter->removeAllListeners('foo');
 
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
     }
 
     public function testRemoveAllListenersNotMatching(): void
@@ -226,9 +217,9 @@ class EventEmitterTest extends TestCase
 
         $this->emitter->removeAllListeners('bar');
 
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
-        $this->assertSame(1, $listenersCalled);
+        self::assertSame(1, $listenersCalled);
     }
 
     public function testRemoveAllListenersWithoutArguments(): void
@@ -245,10 +236,10 @@ class EventEmitterTest extends TestCase
 
         $this->emitter->removeAllListeners();
 
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
         $this->emitter->emit('bar');
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
     }
 
     public function testCallablesClosure(): void
@@ -476,12 +467,12 @@ class EventEmitterTest extends TestCase
         });
 
         $emitter->emit('event');
-        $this->assertEquals(1, $first);
-        $this->assertEquals(0, $second);
-        $this->assertEquals(0, $third);
+        self::assertSame(1, $first);
+        self::assertSame(0, $second);
+        self::assertSame(0, $third);
         $emitter->emit('event');
-        $this->assertEquals(2, $first);
-        $this->assertEquals(1, $second);
-        $this->assertEquals(1, $third);
+        self::assertSame(2, $first);
+        self::assertSame(1, $second);
+        self::assertSame(1, $third);
     }
 }

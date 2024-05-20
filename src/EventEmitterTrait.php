@@ -18,6 +18,7 @@ use function array_merge;
 use function array_search;
 use function array_unique;
 use function array_values;
+use function count;
 
 trait EventEmitterTrait
 {
@@ -73,7 +74,7 @@ trait EventEmitterTrait
             if (false !== $index) {
                 unset($this->listeners[$event][$index]);
 
-                if (\count($this->listeners[$event]) === 0) {
+                if (count($this->listeners[$event]) === 0) {
                     unset($this->listeners[$event]);
                 }
             }
@@ -85,7 +86,7 @@ trait EventEmitterTrait
             if (false !== $index) {
                 unset($this->onceListeners[$event][$index]);
 
-                if (\count($this->onceListeners[$event]) === 0) {
+                if (count($this->onceListeners[$event]) === 0) {
                     unset($this->onceListeners[$event]);
                 }
             }
@@ -102,9 +103,6 @@ trait EventEmitterTrait
         }
     }
 
-    /**
-     * @return array<string, array<int, (callable)>>|list<(callable)>
-     */
     public function listeners(?string $event = null): array
     {
         if ($event === null) {
@@ -122,6 +120,7 @@ trait EventEmitterTrait
                     $this->onceListeners[$eventName] ?? []
                 );
             }
+
             return $events;
         }
 
@@ -131,9 +130,6 @@ trait EventEmitterTrait
         );
     }
 
-	/**
-	 * @param array<mixed> $arguments
-	 */
     public function emit(string $event, array $arguments = []): void
     {
         if ($event === '') {
