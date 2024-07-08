@@ -13,246 +13,240 @@ namespace Evenement\Tests;
 
 use Evenement\EventEmitter;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\BackupGlobals;
+use PHPUnit\Framework\Attributes\BackupStaticProperties;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(EventEmitter::class)]
 class EventEmitterTest extends TestCase
 {
-    /**
-     * @var EventEmitter
-     */
-    private $emitter;
+    private EventEmitter $emitter;
 
-    /**
-     * @before
-     */
-    public function setUpEmitter()
+    #[Before]
+    public function setUpEmitter(): void
     {
         $this->emitter = new EventEmitter();
     }
 
-    public function testAddListenerWithLambda()
+    public function testAddListenerWithLambda(): void
     {
-        $this->emitter->on('foo', function () {});
+        $this->emitter->on('foo', static function (): void {});
 
-        $this->assertEquals(1, count($this->emitter->listeners('foo')));
+        self::assertCount(1, $this->emitter->listeners('foo'));
     }
 
-    public function testAddListenerWithMethod()
+    public function testAddListenerWithMethod(): void
     {
         $listener = new Listener();
         $this->emitter->on('foo', [$listener, 'onFoo']);
 
-        $this->assertEquals(1, count($this->emitter->listeners('foo')));
+        self::assertCount(1, $this->emitter->listeners('foo'));
     }
 
-    public function testAddListenerWithStaticMethod()
+    public function testAddListenerWithStaticMethod(): void
     {
         $this->emitter->on('bar', ['Evenement\Tests\Listener', 'onBar']);
 
-        $this->assertEquals(1, count($this->emitter->listeners('bar')));
+        self::assertCount(1, $this->emitter->listeners('bar'));
     }
 
-    public function testAddListenerWithInvalidListener()
+    public function testAddListenerWithInvalidListener(): void
     {
-        try {
-            $this->emitter->on('foo', 'not a callable');
-            $this->fail();
-        } catch (\Exception $e) {
-        } catch (\TypeError $e) {
-        }
+        $this->expectException(\TypeError::class);
+        $this->emitter->on('foo', 'not a callable');
     }
 
-    public function testOnce()
+    public function testOnce(): void
     {
         $listenerCalled = 0;
 
-        $this->emitter->once('foo', function () use (&$listenerCalled) {
+        $this->emitter->once('foo', static function () use (&$listenerCalled): void {
             $listenerCalled++;
         });
 
-        $this->assertSame(0, $listenerCalled);
+        self::assertSame(0, $listenerCalled);
 
         $this->emitter->emit('foo');
 
-        $this->assertSame(1, $listenerCalled);
+        self::assertSame(1, $listenerCalled);
 
         $this->emitter->emit('foo');
 
-        $this->assertSame(1, $listenerCalled);
+        self::assertSame(1, $listenerCalled);
     }
 
-    public function testOnceWithArguments()
+    public function testOnceWithArguments(): void
     {
         $capturedArgs = [];
 
-        $this->emitter->once('foo', function ($a, $b) use (&$capturedArgs) {
-            $capturedArgs = array($a, $b);
+        $this->emitter->once('foo', static function (string $a, string $b) use (&$capturedArgs): void {
+            $capturedArgs = [$a, $b];
         });
 
-        $this->emitter->emit('foo', array('a', 'b'));
+        $this->emitter->emit('foo', ['a', 'b']);
 
-        $this->assertSame(array('a', 'b'), $capturedArgs);
+        self::assertSame(['a', 'b'], $capturedArgs);
     }
 
-    public function testEmitWithoutArguments()
+    public function testEmitWithoutArguments(): void
     {
         $listenerCalled = false;
 
-        $this->emitter->on('foo', function () use (&$listenerCalled) {
+        $this->emitter->on('foo', static function () use (&$listenerCalled): void {
             $listenerCalled = true;
         });
 
-        $this->assertSame(false, $listenerCalled);
+        self::assertFalse($listenerCalled);
         $this->emitter->emit('foo');
-        $this->assertSame(true, $listenerCalled);
+        self::assertTrue($listenerCalled);
     }
 
-    public function testEmitWithOneArgument()
+    public function testEmitWithOneArgument(): void
     {
-        $test = $this;
-
         $listenerCalled = false;
 
-        $this->emitter->on('foo', function ($value) use (&$listenerCalled, $test) {
+        $this->emitter->on('foo', static function (string $value) use (&$listenerCalled): void {
             $listenerCalled = true;
 
-            $test->assertSame('bar', $value);
+            self::assertSame('bar', $value);
         });
 
-        $this->assertSame(false, $listenerCalled);
+        self::assertFalse($listenerCalled);
         $this->emitter->emit('foo', ['bar']);
-        $this->assertSame(true, $listenerCalled);
+        self::assertTrue($listenerCalled);
     }
 
-    public function testEmitWithTwoArguments()
+    public function testEmitWithTwoArguments(): void
     {
-        $test = $this;
-
         $listenerCalled = false;
 
-        $this->emitter->on('foo', function ($arg1, $arg2) use (&$listenerCalled, $test) {
+        $this->emitter->on('foo', static function (string $arg1, string $arg2) use (&$listenerCalled): void {
             $listenerCalled = true;
 
-            $test->assertSame('bar', $arg1);
-            $test->assertSame('baz', $arg2);
+            self::assertSame('bar', $arg1);
+            self::assertSame('baz', $arg2);
         });
 
-        $this->assertSame(false, $listenerCalled);
+        self::assertFalse($listenerCalled);
         $this->emitter->emit('foo', ['bar', 'baz']);
-        $this->assertSame(true, $listenerCalled);
+        self::assertTrue($listenerCalled);
     }
 
-    public function testEmitWithNoListeners()
+    #[DoesNotPerformAssertions]
+    public function testEmitWithNoListeners(): void
     {
         $this->emitter->emit('foo');
         $this->emitter->emit('foo', ['bar']);
         $this->emitter->emit('foo', ['bar', 'baz']);
     }
 
-    public function testEmitWithTwoListeners()
+    public function testEmitWithTwoListeners(): void
     {
         $listenersCalled = 0;
 
-        $this->emitter->on('foo', function () use (&$listenersCalled) {
+        $this->emitter->on('foo', static function () use (&$listenersCalled): void {
             $listenersCalled++;
         });
 
-        $this->emitter->on('foo', function () use (&$listenersCalled) {
+        $this->emitter->on('foo', static function () use (&$listenersCalled): void {
             $listenersCalled++;
         });
 
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
-        $this->assertSame(2, $listenersCalled);
+        self::assertSame(2, $listenersCalled);
     }
 
-    public function testRemoveListenerMatching()
+    public function testRemoveListenerMatching(): void
     {
         $listenersCalled = 0;
 
-        $listener = function () use (&$listenersCalled) {
+        $listener = static function () use (&$listenersCalled): void {
             $listenersCalled++;
         };
 
         $this->emitter->on('foo', $listener);
         $this->emitter->removeListener('foo', $listener);
 
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
     }
 
-    public function testRemoveListenerNotMatching()
+    public function testRemoveListenerNotMatching(): void
     {
         $listenersCalled = 0;
 
-        $listener = function () use (&$listenersCalled) {
+        $listener = static function () use (&$listenersCalled): void {
             $listenersCalled++;
         };
 
         $this->emitter->on('foo', $listener);
         $this->emitter->removeListener('bar', $listener);
 
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
-        $this->assertSame(1, $listenersCalled);
+        self::assertSame(1, $listenersCalled);
     }
 
-    public function testRemoveAllListenersMatching()
+    public function testRemoveAllListenersMatching(): void
     {
         $listenersCalled = 0;
 
-        $this->emitter->on('foo', function () use (&$listenersCalled) {
+        $this->emitter->on('foo', static function () use (&$listenersCalled): void {
             $listenersCalled++;
         });
 
         $this->emitter->removeAllListeners('foo');
 
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
     }
 
-    public function testRemoveAllListenersNotMatching()
+    public function testRemoveAllListenersNotMatching(): void
     {
         $listenersCalled = 0;
 
-        $this->emitter->on('foo', function () use (&$listenersCalled) {
+        $this->emitter->on('foo', static function () use (&$listenersCalled): void {
             $listenersCalled++;
         });
 
         $this->emitter->removeAllListeners('bar');
 
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
-        $this->assertSame(1, $listenersCalled);
+        self::assertSame(1, $listenersCalled);
     }
 
-    public function testRemoveAllListenersWithoutArguments()
+    public function testRemoveAllListenersWithoutArguments(): void
     {
         $listenersCalled = 0;
 
-        $this->emitter->on('foo', function () use (&$listenersCalled) {
+        $this->emitter->on('foo', static function () use (&$listenersCalled): void {
             $listenersCalled++;
         });
 
-        $this->emitter->on('bar', function () use (&$listenersCalled) {
+        $this->emitter->on('bar', static function () use (&$listenersCalled): void {
             $listenersCalled++;
         });
 
         $this->emitter->removeAllListeners();
 
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
         $this->emitter->emit('foo');
         $this->emitter->emit('bar');
-        $this->assertSame(0, $listenersCalled);
+        self::assertSame(0, $listenersCalled);
     }
 
-    public function testCallablesClosure()
+    public function testCallablesClosure(): void
     {
         $calledWith = null;
 
-        $this->emitter->on('foo', function ($data) use (&$calledWith) {
+        $this->emitter->on('foo', static function (?string $data) use (&$calledWith): void {
             $calledWith = $data;
         });
 
@@ -261,7 +255,7 @@ class EventEmitterTest extends TestCase
         self::assertSame('bar', $calledWith);
     }
 
-    public function testCallablesClass()
+    public function testCallablesClass(): void
     {
         $listener = new Listener();
         $this->emitter->on('foo', [$listener, 'onFoo']);
@@ -272,7 +266,7 @@ class EventEmitterTest extends TestCase
     }
 
 
-    public function testCallablesClassInvoke()
+    public function testCallablesClassInvoke(): void
     {
         $listener = new Listener();
         $this->emitter->on('foo', $listener);
@@ -282,7 +276,7 @@ class EventEmitterTest extends TestCase
         self::assertSame(['bar'], $listener->getMagicData());
     }
 
-    public function testCallablesStaticClass()
+    public function testCallablesStaticClass(): void
     {
         $this->emitter->on('foo', '\Evenement\Tests\Listener::onBar');
 
@@ -291,7 +285,7 @@ class EventEmitterTest extends TestCase
         self::assertSame(['bar'], Listener::getStaticData());
     }
 
-    public function testCallablesFunction()
+    public function testCallablesFunction(): void
     {
         $this->emitter->on('foo', '\Evenement\Tests\setGlobalTestData');
 
@@ -302,14 +296,14 @@ class EventEmitterTest extends TestCase
         unset($GLOBALS['evenement-evenement-test-data']);
     }
 
-    public function testListeners()
+    public function testListeners(): void
     {
-        $onA = function () {};
-        $onB = function () {};
-        $onC = function () {};
-        $onceA = function () {};
-        $onceB = function () {};
-        $onceC = function () {};
+        $onA = static function (): void {};
+        $onB = static function (): void {};
+        $onC = static function (): void {};
+        $onceA = static function (): void {};
+        $onceB = static function (): void {};
+        $onceC = static function (): void {};
 
         self::assertCount(0, $this->emitter->listeners('event'));
         $this->emitter->on('event', $onA);
@@ -342,16 +336,21 @@ class EventEmitterTest extends TestCase
         $this->emitter->emit('event');
         self::assertCount(2, $this->emitter->listeners('event'));
         self::assertSame([$onA, $onC], $this->emitter->listeners('event'));
+        $this->emitter->removeAllListeners();
+        $this->emitter->once('event', $onceA);
+        self::assertCount(1, $this->emitter->listeners('event'));
+        $this->emitter->removeListener('event', $onceA);
+        self::assertCount(0, $this->emitter->listeners('event'));
     }
 
-    public function testOnceCallIsNotRemovedWhenWorkingOverOnceListeners()
+    public function testOnceCallIsNotRemovedWhenWorkingOverOnceListeners(): void
     {
         $aCalled = false;
-        $aCallable = function () use (&$aCalled) {
+        $aCallable = static function () use (&$aCalled): void {
             $aCalled = true;
         };
         $bCalled = false;
-        $bCallable = function () use (&$bCalled, $aCallable) {
+        $bCallable = function () use (&$bCalled, $aCallable): void {
             $bCalled = true;
             $this->emitter->once('event', $aCallable);
         };
@@ -369,45 +368,44 @@ class EventEmitterTest extends TestCase
         self::assertTrue($bCalled);
     }
 
-    public function testEventNameMustBeStringOn()
+    public function testEventNameMustBeStringOn(): void
     {
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('event name must not be null');
+        self::expectExceptionMessage('event name must not be an empty string');
 
-        $this->emitter->on(null, function () {
-        });
+        $this->emitter->on('', static function (): void {});
     }
 
-    public function testEventNameMustBeStringOnce()
+    public function testEventNameMustBeStringOnce(): void
     {
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('event name must not be null');
+        self::expectExceptionMessage('event name must not be an empty string');
 
-        $this->emitter->once(null, function () {});
+        $this->emitter->once('', static function (): void {});
     }
 
-    public function testEventNameMustBeStringRemoveListener()
+    public function testEventNameMustBeStringRemoveListener(): void
     {
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('event name must not be null');
+        self::expectExceptionMessage('event name must not be an empty string');
 
-        $this->emitter->removeListener(null, function () {});
+        $this->emitter->removeListener('', static function (): void {});
     }
 
-    public function testEventNameMustBeStringEmit()
+    public function testEventNameMustBeStringEmit(): void
     {
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('event name must not be null');
+        self::expectExceptionMessage('event name must not be an empty string');
 
-        $this->emitter->emit(null);
+        $this->emitter->emit('');
     }
 
-    public function testListenersGetAll()
+    public function testListenersGetAll(): void
     {
-        $a = function () {};
-        $b = function () {};
-        $c = function () {};
-        $d = function () {};
+        $a = static function (): void {};
+        $b = static function (): void {};
+        $c = static function (): void {};
+        $d = static function (): void {};
 
         $this->emitter->once('event2', $c);
         $this->emitter->on('event', $a);
@@ -431,14 +429,14 @@ class EventEmitterTest extends TestCase
         );
     }
 
-    public function testOnceNestedCallRegression()
+    public function testOnceNestedCallRegression(): void
     {
         $first = 0;
         $second = 0;
 
-        $this->emitter->once('event', function () use (&$first, &$second) {
+        $this->emitter->once('event', function () use (&$first, &$second): void {
             $first++;
-            $this->emitter->once('event', function () use (&$second) {
+            $this->emitter->once('event', static function () use (&$second): void {
                 $second++;
             });
             $this->emitter->emit('event');
@@ -449,7 +447,7 @@ class EventEmitterTest extends TestCase
         self::assertSame(1, $second);
     }
 
-    public function testNestedOn()
+    public function testNestedOn(): void
     {
         $emitter = $this->emitter;
 
@@ -457,24 +455,24 @@ class EventEmitterTest extends TestCase
         $second = 0;
         $third = 0;
 
-        $emitter->on('event', function () use (&$emitter, &$first, &$second, &$third) {
+        $emitter->on('event', static function () use (&$emitter, &$first, &$second, &$third): void {
             $first++;
 
-            $emitter->on('event', function () use (&$second, &$third) {
+            $emitter->on('event', static function () use (&$second, &$third): void {
                 $second++;
             })
-                ->once('event', function () use (&$third) {
+                ->once('event', static function () use (&$third): void {
                     $third++;
                 });
         });
 
         $emitter->emit('event');
-        $this->assertEquals(1, $first);
-        $this->assertEquals(0, $second);
-        $this->assertEquals(0, $third);
+        self::assertSame(1, $first);
+        self::assertSame(0, $second);
+        self::assertSame(0, $third);
         $emitter->emit('event');
-        $this->assertEquals(2, $first);
-        $this->assertEquals(1, $second);
-        $this->assertEquals(1, $third);
+        self::assertSame(2, $first);
+        self::assertSame(1, $second);
+        self::assertSame(1, $third);
     }
 }

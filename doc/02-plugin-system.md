@@ -29,7 +29,7 @@ A plugin class must implement the `PluginInterface`:
 ```php
 interface PluginInterface
 {
-    function attachEvents(EventEmitterInterface $emitter);
+    public function attachEvents(EventEmitterInterface $emitter): void;
 }
 ```
 
@@ -38,9 +38,9 @@ emitter. For example:
 ```php
 class FooPlugin implements PluginInterface
 {
-    public function attachEvents(EventEmitterInterface $emitter)
+    public function attachEvents(EventEmitterInterface $emitter): void
     {
-        $emitter->on('foo', function () {
+        $emitter->on('foo', static function (): void {
             echo 'bar!';
         });
     }
@@ -76,7 +76,7 @@ In the code that creates the post, I'll insert the `post.create` event:
 ```php
 class PostEvent
 {
-    public $post;
+    public array $post;
 
     public function __construct(array $post)
     {
@@ -98,7 +98,7 @@ allowing listeners to change it.
 
 The same thing for the `post.render` event:
 ```php
-public function renderPostBody(array $post)
+public function renderPostBody(array $post): string
 {
     $emitter = $this->emitter;
 
@@ -127,13 +127,13 @@ The `markdown` function represents a markdown to HTML converter.
 ```php
 class MarkdownPlugin implements PluginInterface
 {
-    public function attachEvents(EventEmitterInterface $emitter)
+    public function attachEvents(EventEmitterInterface $emitter): void
     {
-        $emitter->on('post.create', function (PostEvent $event) {
+        $emitter->on('post.create', static function (PostEvent $event): void {
             $event->post['format'] = 'markdown';
         });
 
-        $emitter->on('post.render', function (PostEvent $event) {
+        $emitter->on('post.render', static function (PostEvent $event): void {
             if (isset($event->post['format']) && 'markdown' === $event->post['format']) {
                 $event->post['body'] = markdown($event->post['body']);
             }

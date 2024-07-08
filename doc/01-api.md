@@ -6,14 +6,14 @@ define an interface that extends the emitter and implicitly defines certain
 events to be emitted, or if you want to type hint an `EventEmitter` to be
 passed to a method without coupling to the specific implementation.
 
-## on($event, callable $listener)
+## on(string $event, callable $listener): static;
 
 Allows you to subscribe to an event.
 
 Example:
 
 ```php
-$emitter->on('user.created', function (User $user) use ($logger) {
+$emitter->on('user.created', static function (User $user) use ($logger): void {
     $logger->log(sprintf("User '%s' was created.", $user->getLogin()));
 });
 ```
@@ -23,7 +23,7 @@ instead of the anonymous function:
 
 ```php
 $loggerSubscriber = new LoggerSubscriber($logger);
-$emitter->on('user.created', array($loggerSubscriber, 'onUserCreated'));
+$emitter->on('user.created', [$loggerSubscriber, 'onUserCreated']);
 ```
 
 This has the benefit that listener does not even need to know that the emitter
@@ -32,10 +32,10 @@ exists.
 You can also accept more than one parameter for the listener:
 
 ```php
-$emitter->on('numbers_added', function ($result, $a, $b) {});
+$emitter->on('numbers_added', static function (int $result, int $a, int $b): void {});
 ```
 
-## once($event, callable $listener)
+## once(string $event, callable $listener): static;
 
 Convenience method that adds a listener which is guaranteed to only be called
 once.
@@ -43,12 +43,12 @@ once.
 Example:
 
 ```php
-$conn->once('connected', function () use ($conn, $data) {
+$conn->once('connected', static function () use ($conn, $data): void {
     $conn->send($data);
 });
 ```
 
-## emit($event, array $arguments = [])
+## emit(string $event, array $arguments = []): void;
 
 Emit an event, which will call all listeners.
 
@@ -66,7 +66,7 @@ $result = $a + $b;
 $emitter->emit('numbers_added', [$result, $a, $b]);
 ```
 
-## listeners($event)
+## listeners(?string $event = null): array;
 
 Allows you to inspect the listeners attached to an event. Particularly useful
 to check if there are any listeners at all.
@@ -75,16 +75,16 @@ Example:
 
 ```php
 $e = new \RuntimeException('Everything is broken!');
-if (0 === count($emitter->listeners('error'))) {
+if (0 === \count($emitter->listeners('error'))) {
     throw $e;
 }
 ```
 
-## removeListener($event, callable $listener)
+## removeListener(string $event, callable $listener): void;
 
 Remove a specific listener for a specific event.
 
-## removeAllListeners($event = null)
+## removeAllListeners(?string $event = null): void;
 
 Remove all listeners for a specific event or all listeners all together. This
 is useful for long-running processes, where you want to remove listeners in
