@@ -12,7 +12,7 @@ It is very strongly inspired by the [EventEmitter](https://nodejs.org/api/events
 ![Continuous Integration](https://github.com/igorw/evenement/workflows/CI/badge.svg)
 [![Latest Stable Version](https://poser.pugx.org/evenement/evenement/v)](https://packagist.org/packages/evenement/evenement)
 [![Total Downloads](https://poser.pugx.org/evenement/evenement/downloads)](https://packagist.org/packages/evenement/evenement)
-[![License](http://poser.pugx.org/evenement/evenement/license)](https://packagist.org/packages/evenement/evenement)
+[![License](https://poser.pugx.org/evenement/evenement/license)](https://packagist.org/packages/evenement/evenement)
 
 ## Fetch
 
